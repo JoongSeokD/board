@@ -24,8 +24,7 @@ public class SignUpFormValidator implements Validator {
     public void validate(Object target, Errors errors) {
         SignUpForm signUpForm = (SignUpForm) target;
         String username = signUpForm.getUsername();
-        Account account = accountRepository.findByName(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username));
+        Account account = accountRepository.findByName(username).orElse(null);
         if (account != null){
             errors.rejectValue("username", "invalid.username", new Object[]{username}, "이미 존재하는 이름입니다.");
         }

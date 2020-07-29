@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Board</title>
+    <title>메인</title>
 </head>
 <body>
-<a href="/login">로그인</a>
-<a href="/sign-up">회원 가입</a>
+<h2>메인</h2>
+<a sec:authorize="isAnonymous()" href="/login">로그인</a>
+<a sec:authorize="isAnonymous()" href="/sign-up">회원 가입</a>
+
+<form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
+    <button type="submit">로그아웃</button>
+</form>
 </body>
 </html>

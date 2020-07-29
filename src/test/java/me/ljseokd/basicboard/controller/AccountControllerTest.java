@@ -1,5 +1,6 @@
 package me.ljseokd.basicboard.controller;
 
+import me.ljseokd.basicboard.WithAccount;
 import me.ljseokd.basicboard.domain.Account;
 import me.ljseokd.basicboard.repository.AccountRepository;
 import org.junit.jupiter.api.Assertions;
@@ -64,7 +65,7 @@ class AccountControllerTest {
                 .andExpect(authenticated())
         ;
 
-        Account ljseokd = accountRepository.findByName("ljseokd");
+        Account ljseokd = accountRepository.findByName("ljseokd").get();
         Assertions.assertNotEquals("12345678",ljseokd.getPassword());
     }
     
@@ -93,6 +94,18 @@ class AccountControllerTest {
                 .andExpect(model().hasErrors())
                 .andExpect(view().name("sign-up"))
                 .andExpect(unauthenticated());
+    }
+
+    @DisplayName("로그아웃")
+    @Test
+    @WithAccount("ljseokd")
+    void logout() throws Exception {
+        mockMvc.perform(post("/logout")
+                .with(csrf()))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(unauthenticated())
+        ;
+
     }
 
 }

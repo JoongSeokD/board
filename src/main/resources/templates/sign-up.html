@@ -8,9 +8,9 @@
 <body>
 
 <h2>회원가입</h2>
-<form th:action="@{/sign-up}" method="post">
-    <input type="text" name="name" required>
-    <input type="password" name="password" required>
+<form th:action="@{/sign-up}" th:object="${signUpForm}" method="post">
+    <input type="text" name="username" th:field="*{username}" required>
+    <input type="password" name="password" th:field="*{password}" required>
     <button type="submit">가입하기</button>
 </form>
 </body>

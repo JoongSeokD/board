@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import me.ljseokd.basicboard.domain.Account;
 import me.ljseokd.basicboard.form.SignUpForm;
 import me.ljseokd.basicboard.repository.AccountRepository;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -22,9 +23,11 @@ public class SignUpFormValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         SignUpForm signUpForm = (SignUpForm) target;
-        Account account = accountRepository.findByName(signUpForm.getUsername());
+        String username = signUpForm.getUsername();
+        Account account = accountRepository.findByName(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username));
         if (account != null){
-            errors.rejectValue("username", "invalid.username", new Object[]{signUpForm.getUsername()}, "이미 존재하는 이름입니다.");
+            errors.rejectValue("username", "invalid.username", new Object[]{username}, "이미 존재하는 이름입니다.");
         }
     }
 }

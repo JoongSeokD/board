@@ -1,17 +1,15 @@
 package me.ljseokd.basicboard.domain;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
-
 import java.time.LocalDateTime;
 
-import static javax.persistence.FetchType.*;
-import static lombok.AccessLevel.*;
+import static javax.persistence.FetchType.LAZY;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
@@ -41,4 +39,8 @@ public class Notice {
         account.getNotices().add(this);
     }
 
+    public Notice(String title, String contents) {
+        this.title = title;
+        this.contents = contents;
+    }
 }

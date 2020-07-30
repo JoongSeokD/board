@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>글 보기</title>
+</head>
+<body>
+제목  : <span th:text="${notice.title}"></span><br/>
+내용 : <span th:utext="${notice.contents}"></span><br/>
+작성자 : <span th:text="${notice.account.name}"></span><br/>
+작성 시간 : <span th:text="${#temporals.format(notice.createDateTime, 'yyyy-MM-dd')}"></span><br/>
+수정 시간 : <span th:text="${#temporals.format(notice.lastModifiedTime, 'yyyy-MM-dd')}"></span><br/>
+
+<a th:if="${isWriter}" th:href="@{'/notice/' + ${notice.id} + '/delete'}">삭제</a>
+<a th:if="${isWriter}" th:href="@{'/notice/' + ${notice.id} + '/update'}">수정</a>
+<a th:href="@{/notice/list}">목록</a>
+</body>
+</html>

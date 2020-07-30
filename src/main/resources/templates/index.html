@@ -10,6 +10,7 @@
 <h2>메인</h2>
 <a sec:authorize="isAnonymous()" href="/login">로그인</a>
 <a sec:authorize="isAnonymous()" href="/sign-up">회원 가입</a>
+<a sec:authorize="isAuthenticated()" href="/notice/new">글쓰기</a>
 
 <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
     <button type="submit">로그아웃</button>

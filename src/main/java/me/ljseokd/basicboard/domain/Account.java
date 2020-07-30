@@ -1,5 +1,6 @@
 package me.ljseokd.basicboard.domain;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
+@EqualsAndHashCode(of = "id")
 @NoArgsConstructor(access = PROTECTED)
 public class Account {
 
@@ -30,5 +32,4 @@ public class Account {
         this.name = name;
         this.password = password;
     }
-
 }

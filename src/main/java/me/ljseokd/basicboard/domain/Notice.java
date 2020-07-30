@@ -2,19 +2,17 @@ package me.ljseokd.basicboard.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import me.ljseokd.basicboard.auditing.DateTimeBaseEntity;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
-import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.FetchType.EAGER;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-public class Notice {
+public class Notice extends DateTimeBaseEntity {
 
     @Id @GeneratedValue
     @Column(name = "notice_id")
@@ -24,13 +22,7 @@ public class Notice {
     @Lob
     private String contents;
 
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createDateTime;
-    @LastModifiedDate
-    private LocalDateTime lastModifiedTime;
-
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "account_id")
     Account account;
 
@@ -42,5 +34,9 @@ public class Notice {
     public Notice(String title, String contents) {
         this.title = title;
         this.contents = contents;
+    }
+
+    public boolean isWriter(Account account) {
+        return this.account.equals(account);
     }
 }

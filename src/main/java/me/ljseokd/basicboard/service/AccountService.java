@@ -25,11 +25,12 @@ public class AccountService implements UserDetailsService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void join(SignUpForm signUpForm) {
+    public Long join(SignUpForm signUpForm) {
         Account account = new Account(signUpForm.getUsername(),
                 passwordEncoder.encode(signUpForm.getPassword()));
-        accountRepository.save(account);
+        Account save = accountRepository.save(account);
         login(account);
+        return save.getId();
     }
 
     private void login(Account account) {

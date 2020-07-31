@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
@@ -48,7 +49,7 @@ public class NoticeController {
 
     @GetMapping("/{noticeId}/view")
     public String noticeView(@CurrentAccount Account account,
-                             @PathVariable("noticeId") Long noticeId,
+                             @PathVariable Long noticeId,
                              Model model){
         Notice notice = findById(noticeId);
         model.addAttribute("isWriter", notice.isWriter(account));
@@ -63,7 +64,7 @@ public class NoticeController {
     }
 
     @GetMapping("/{noticeId}/update")
-    public String noticeUpdateForm(@PathVariable("noticeId") Long noticeId,
+    public String noticeUpdateForm(@PathVariable Long noticeId,
                                    Model model){
         Notice notice = findById(noticeId);
         NoticeForm noticeForm = modelMapper.map(notice, NoticeForm.class);
@@ -75,7 +76,7 @@ public class NoticeController {
     @PostMapping("/{noticeId}/update")
     public String noticeUpdateSubmit(@Valid @ModelAttribute NoticeForm noticeForm,
                                      Errors errors,Model model,
-                                     @PathVariable("noticeId") Long noticeId){
+                                     @PathVariable Long noticeId){
         if (errors.hasErrors()){
             model.addAttribute(noticeForm);
             return "notice/update";
@@ -85,5 +86,14 @@ public class NoticeController {
         notice.update(noticeForm);
 
         return "redirect:/notice/" + noticeId + "/view";
+    }
+
+    @PostMapping("/{noticeId}/delete")
+    public String noticeDelete(@PathVariable Long noticeId,
+                               RedirectAttributes attributes){
+        Notice notice = findById(noticeId);
+        noticeRepository.delete(notice);
+        attributes.addFlashAttribute("message", notice.getTitle() + "게시글이 삭제 되었습니다.");
+        return "redirect:/notice/list";
     }
 }

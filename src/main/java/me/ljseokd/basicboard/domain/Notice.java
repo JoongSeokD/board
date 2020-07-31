@@ -3,6 +3,7 @@ package me.ljseokd.basicboard.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.ljseokd.basicboard.auditing.DateTimeBaseEntity;
+import me.ljseokd.basicboard.form.NoticeForm;
 
 import javax.persistence.*;
 
@@ -38,5 +39,10 @@ public class Notice extends DateTimeBaseEntity {
 
     public boolean isWriter(Account account) {
         return this.account.equals(account);
+    }
+
+    public void update(NoticeForm noticeForm) {
+        title = noticeForm.getTitle();
+        contents = noticeForm.getContents();
     }
 }

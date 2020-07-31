@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>글 수정</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/node_modules/summernote/dist/summernote-bs4.min.css">
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+<form class="needs-validation col-sm-10" th:action="@{/notice/new}" th:object="${noticeForm}" method="post">
+    <input type="text" name="title" th:field="*{title}" placeholder="제목을 입력하세요" required><br/>
+
+    <textarea type="textarea" th:field="*{contents}" class="editor" required></textarea>
+    <button type="submit">수정하기</button>
+    <a th:href="@{'/notice/' + ${noticeForm.id} + '/view'}">돌아가기</a>
+</form>
+
+<script src="/node_modules/summernote/dist/summernote-bs4.js"></script>
+<script>
+    $(function (){
+        $(".editor").summernote({
+            fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Nato Sans KR', 'Merriweather'],
+            placeholder: '내용을 입력하세요',
+            tabSize: 2,
+            height:300
+        });
+    });
+
+</script>
+</body>
+</html>

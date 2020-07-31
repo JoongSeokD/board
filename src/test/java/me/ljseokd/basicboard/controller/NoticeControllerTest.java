@@ -56,11 +56,6 @@ class NoticeControllerTest {
     @Autowired
     EntityManager entityManager;
 
-    @BeforeEach
-    void beforeEach(){
-
-    }
-
     @DisplayName("게시글 등록 페이지")
     @Test
     @WithAccount("ljseokd")
@@ -222,6 +217,36 @@ class NoticeControllerTest {
                 .andExpect(model().hasErrors())
                 .andExpect(view().name("notice/update"));
     }
-    
+
+    @DisplayName("게시글 삭제 성공")
+    @Test
+    void delete_notice_success() throws Exception {
+        //given
+        SignUpForm signUpForm = new SignUpForm();
+        signUpForm.setUsername("ljseokd");
+        signUpForm.setPassword("12341234");
+        Long createdId = accountService.join(signUpForm);
+        Account account = accountRepository.findById(createdId).get();
+
+        NoticeForm noticeForm = new NoticeForm();
+        noticeForm.setTitle("title");
+        noticeForm.setContents("contents");
+        Long noticeId = noticeService.createNotice(account, noticeForm);
+        //when
+        mockMvc.perform(post("/notice/" + noticeId + "/delete")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists("message"))
+                .andExpect(view().name("redirect:/notice/list"));
+    }
+
+    @DisplayName("게시글 삭제 실패 (없는 경로)")
+    @Test
+    @WithAccount("ljseokd")
+    void delete_notice_fail() throws Exception {
+        assertThrows(Exception.class,
+                () -> mockMvc.perform(post("/notice/123/delete")
+                        .with(csrf()))) ;
+    }
 
 }

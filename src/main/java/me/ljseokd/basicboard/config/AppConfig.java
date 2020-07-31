@@ -1,6 +1,5 @@
 package me.ljseokd.basicboard.config;
 
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +22,7 @@ public class AppConfig {
     }
 
     @Bean
-    JPAQueryFactory jpaQueryFactory(EntityManager em){
+    public JPAQueryFactory jpaQueryFactory(EntityManager em){
         return new JPAQueryFactory(em);
     }
 }

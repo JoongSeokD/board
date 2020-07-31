@@ -23,6 +23,7 @@ public class NoticeController {
 
     private final NoticeService noticeService;
     private final NoticeRepository noticeRepository;
+    private final ModelMapper modelMapper;
 
     @GetMapping("/new")
     public String createNoticeForm(Model model){
@@ -49,11 +50,40 @@ public class NoticeController {
     public String noticeView(@CurrentAccount Account account,
                              @PathVariable("noticeId") Long noticeId,
                              Model model){
-        Notice notice = noticeRepository.findById(noticeId)
-                .orElseThrow(() -> new IllegalArgumentException(String.valueOf(noticeId)));
+        Notice notice = findById(noticeId);
         model.addAttribute("isWriter", notice.isWriter(account));
         model.addAttribute(notice);
 
         return "notice/view";
+    }
+
+    private Notice findById(Long noticeId) {
+        return noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new IllegalArgumentException(String.valueOf(noticeId)));
+    }
+
+    @GetMapping("/{noticeId}/update")
+    public String noticeUpdateForm(@PathVariable("noticeId") Long noticeId,
+                                   Model model){
+        Notice notice = findById(noticeId);
+        NoticeForm noticeForm = modelMapper.map(notice, NoticeForm.class);
+        model.addAttribute(noticeForm);
+
+        return "notice/update";
+    }
+
+    @PostMapping("/{noticeId}/update")
+    public String noticeUpdateSubmit(@Valid @ModelAttribute NoticeForm noticeForm,
+                                     Errors errors,Model model,
+                                     @PathVariable("noticeId") Long noticeId){
+        if (errors.hasErrors()){
+            model.addAttribute(noticeForm);
+            return "notice/update";
+        }
+
+        Notice notice = findById(noticeId);
+        notice.update(noticeForm);
+
+        return "redirect:/notice/" + noticeId + "/view";
     }
 }

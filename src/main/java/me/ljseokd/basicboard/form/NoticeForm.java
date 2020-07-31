@@ -9,6 +9,8 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class NoticeForm {
 
+    private Long id;
+
     @NotBlank
     @Length(max = 50)
     private String title;

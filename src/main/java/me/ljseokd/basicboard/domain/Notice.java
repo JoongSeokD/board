@@ -8,6 +8,7 @@ import me.ljseokd.basicboard.form.NoticeForm;
 import javax.persistence.*;
 
 import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -23,7 +24,7 @@ public class Notice extends DateTimeBaseEntity {
     @Lob
     private String contents;
 
-    @ManyToOne(fetch = EAGER)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "account_id")
     Account account;
 

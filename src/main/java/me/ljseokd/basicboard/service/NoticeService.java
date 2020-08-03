@@ -5,6 +5,7 @@ import me.ljseokd.basicboard.domain.Account;
 import me.ljseokd.basicboard.domain.Notice;
 import me.ljseokd.basicboard.form.NoticeForm;
 import me.ljseokd.basicboard.repository.NoticeRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -21,5 +22,20 @@ public class NoticeService {
         notice.addAccount(account);
         noticeRepository.save(notice);
         return notice.getId();
+    }
+
+    public boolean isWriter(Account noticeAccount, Account account) {
+        if (account != null){
+            return noticeAccount.equals(account);
+        }
+        return false;
+    }
+
+    public void update(Long noticeId, NoticeForm noticeForm) {
+        Notice notice = noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new IllegalArgumentException(String.valueOf(noticeId)));
+
+        notice.update(noticeForm);
+
     }
 }

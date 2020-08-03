@@ -120,7 +120,7 @@ class NoticeControllerTest {
                 .andExpect(view().name("notice/view"));
 
         //then
-        assertTrue(notice.isWriter(account));
+        assertTrue(noticeService.isWriter(notice.getAccount(), account));
     }
 
     @DisplayName("게시글 보기 실패 (없는 경로)")
@@ -247,6 +247,16 @@ class NoticeControllerTest {
         assertThrows(Exception.class,
                 () -> mockMvc.perform(post("/notice/123/delete")
                         .with(csrf()))) ;
+    }
+
+    @DisplayName("게시글 리스트")
+    @Test
+    void list_notice() throws Exception {
+        mockMvc.perform(get("/notice/list"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("noticePage"))
+                .andExpect(view().name("notice/list"))
+                .andDo(print());
     }
 
 }

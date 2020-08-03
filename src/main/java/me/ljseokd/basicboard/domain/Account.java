@@ -22,14 +22,14 @@ public class Account {
     private Long id;
 
     @Column(unique = true)
-    private String name;
+    private String nickname;
     private String password;
 
     @OneToMany(mappedBy = "account")
     private List<Notice> notices = new ArrayList<>();
 
-    public Account(String name, String password) {
-        this.name = name;
+    public Account(String nickname, String password) {
+        this.nickname = nickname;
         this.password = password;
     }
 }

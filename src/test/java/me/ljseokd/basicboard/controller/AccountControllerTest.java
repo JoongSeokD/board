@@ -62,7 +62,7 @@ class AccountControllerTest extends AbstractContainerBaseTest {
                 .andExpect(authenticated())
         ;
 
-        Account ljseokd = accountRepository.findByName("ljseokd").get();
+        Account ljseokd = accountRepository.findByNickname("ljseokd").get();
         Assertions.assertNotEquals("12345678",ljseokd.getPassword());
     }
     

@@ -45,7 +45,7 @@ public class AccountService implements UserDetailsService {
     @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account account = accountRepository.findByName(username)
+        Account account = accountRepository.findByNickname(username)
                 .orElseThrow(() ->  new UsernameNotFoundException(username));
 
         return new UserAccount(account);

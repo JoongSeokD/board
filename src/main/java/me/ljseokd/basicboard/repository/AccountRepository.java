@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Transactional(readOnly = true)
 public interface AccountRepository extends JpaRepository<Account, Long> {
-    Optional<Account> findByName(String username);
+    Optional<Account> findByNickname(String username);
 }

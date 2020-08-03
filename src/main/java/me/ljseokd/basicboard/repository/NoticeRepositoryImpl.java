@@ -26,7 +26,7 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom{
     public Page<NoticeDto> page(Pageable pageable) {
         QueryResults<NoticeDto> results = queryFactory
                 .select(new QNoticeDto(
-                        account.name.as("writer"),
+                        account.nickname.as("writer"),
                         notice.title,
                         notice.lastModifiedTime,
                         notice.id.as("noticeId")))

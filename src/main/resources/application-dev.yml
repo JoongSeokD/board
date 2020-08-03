@@ -1,9 +1,9 @@
 spring:
   datasource:
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-    url: jdbc:h2:mem://localhost/~/datajpa
+    driver-class-name: org.postgresql.Driver
+    username: boarder
+    password: boardpass
+    url: jdbc:postgresql://localhost:5432/board
   jpa:
     hibernate:
       ddl-auto: create

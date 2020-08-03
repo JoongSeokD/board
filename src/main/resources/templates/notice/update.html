@@ -11,7 +11,7 @@
     <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-<form class="needs-validation col-sm-10" th:action="@{/notice/new}" th:object="${noticeForm}" method="post">
+<form class="needs-validation col-sm-10" th:action="@{'/notice/' + ${noticeForm.id} + '/update'}" th:object="${noticeForm}" method="post">
     <input type="text" name="title" th:field="*{title}" placeholder="제목을 입력하세요" required><br/>
 
     <textarea type="textarea" th:field="*{contents}" class="editor" required></textarea>

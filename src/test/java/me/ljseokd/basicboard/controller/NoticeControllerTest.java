@@ -148,7 +148,11 @@ class NoticeControllerTest {
         mockMvc.perform(get("/notice/"+ noticeId +"/update"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("noticeForm"))
-                .andExpect(view().name("notice/update"));
+                .andExpect(view().name("notice/update"))
+                .andExpect(result ->
+                        assertTrue(result.getResponse().getContentAsString().contains("action=\"/notice/" + noticeId + "/update")))
+        .andDo(print());
+
     }
 
     @DisplayName("게시글 수정 없는 페이지")

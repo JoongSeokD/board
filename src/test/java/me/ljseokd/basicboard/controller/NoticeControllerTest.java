@@ -1,28 +1,23 @@
 package me.ljseokd.basicboard.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import me.ljseokd.basicboard.AbstractContainerBaseTest;
+import me.ljseokd.basicboard.MockMvcTest;
 import me.ljseokd.basicboard.WithAccount;
 import me.ljseokd.basicboard.domain.Account;
 import me.ljseokd.basicboard.domain.Notice;
-import me.ljseokd.basicboard.domain.UserAccount;
 import me.ljseokd.basicboard.form.NoticeForm;
 import me.ljseokd.basicboard.form.SignUpForm;
 import me.ljseokd.basicboard.repository.AccountRepository;
 import me.ljseokd.basicboard.repository.NoticeRepository;
 import me.ljseokd.basicboard.service.AccountService;
 import me.ljseokd.basicboard.service.NoticeService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -32,11 +27,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@AutoConfigureMockMvc
-@SpringBootTest
-@Transactional
 @Slf4j
-class NoticeControllerTest {
+@MockMvcTest
+class NoticeControllerTest  extends AbstractContainerBaseTest {
 
     @Autowired
     MockMvc mockMvc;

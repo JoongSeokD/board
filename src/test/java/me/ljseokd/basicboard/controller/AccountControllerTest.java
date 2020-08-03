@@ -1,5 +1,7 @@
 package me.ljseokd.basicboard.controller;
 
+import me.ljseokd.basicboard.AbstractContainerBaseTest;
+import me.ljseokd.basicboard.MockMvcTest;
 import me.ljseokd.basicboard.WithAccount;
 import me.ljseokd.basicboard.domain.Account;
 import me.ljseokd.basicboard.repository.AccountRepository;
@@ -7,10 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
@@ -21,10 +20,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@Transactional
-class AccountControllerTest {
+@MockMvcTest
+class AccountControllerTest extends AbstractContainerBaseTest {
 
     @Autowired
     MockMvc mockMvc;

@@ -56,7 +56,9 @@ public class NoticeController {
         Notice notice = noticeRepository.findAccountFetchById(noticeId)
                 .orElseThrow(() -> new IllegalArgumentException(String.valueOf(noticeId)));
 
+        // TODO IsWriter도 Dto에 들어가야 하는지 생각해봐야함
         model.addAttribute("isWriter", noticeService.isWriter(notice.getAccount(),account));
+        // TODO NoticeDto로 변환해야함
         model.addAttribute(notice);
 
         return "notice/view";

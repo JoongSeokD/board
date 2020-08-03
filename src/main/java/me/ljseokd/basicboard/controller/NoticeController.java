@@ -8,6 +8,7 @@ import me.ljseokd.basicboard.form.NoticeForm;
 import me.ljseokd.basicboard.repository.NoticeRepository;
 import me.ljseokd.basicboard.service.NoticeService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -51,16 +52,14 @@ public class NoticeController {
     public String noticeView(@CurrentAccount Account account,
                              @PathVariable Long noticeId,
                              Model model){
-        Notice notice = findById(noticeId);
-        model.addAttribute("isWriter", notice.isWriter(account));
+
+        Notice notice = noticeRepository.findAccountFetchById(noticeId)
+                .orElseThrow(() -> new IllegalArgumentException(String.valueOf(noticeId)));
+
+        model.addAttribute("isWriter", noticeService.isWriter(notice.getAccount(),account));
         model.addAttribute(notice);
 
         return "notice/view";
-    }
-
-    private Notice findById(Long noticeId) {
-        return noticeRepository.findById(noticeId)
-                .orElseThrow(() -> new IllegalArgumentException(String.valueOf(noticeId)));
     }
 
     @GetMapping("/{noticeId}/update")
@@ -73,6 +72,11 @@ public class NoticeController {
         return "notice/update";
     }
 
+    private Notice findById(Long noticeId) {
+        return noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new IllegalArgumentException(String.valueOf(noticeId)));
+    }
+
     @PostMapping("/{noticeId}/update")
     public String noticeUpdateSubmit(@Valid @ModelAttribute NoticeForm noticeForm,
                                      Errors errors,Model model,
@@ -81,10 +85,7 @@ public class NoticeController {
             model.addAttribute(noticeForm);
             return "notice/update";
         }
-
-        Notice notice = findById(noticeId);
-        notice.update(noticeForm);
-
+        noticeService.update(noticeId, noticeForm);
         return "redirect:/notice/" + noticeId + "/view";
     }
 
@@ -93,7 +94,14 @@ public class NoticeController {
                                RedirectAttributes attributes){
         Notice notice = findById(noticeId);
         noticeRepository.delete(notice);
-        attributes.addFlashAttribute("message", notice.getTitle() + "게시글이 삭제 되었습니다.");
+        attributes.addFlashAttribute("message",
+                notice.getTitle() + " 게시글이 삭제 되었습니다.");
         return "redirect:/notice/list";
+    }
+
+    @GetMapping("/list")
+    public String list(Pageable pageable, Model model){
+        model.addAttribute("noticePage", noticeRepository.page(pageable));
+        return "notice/list";
     }
 }

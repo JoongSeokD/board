@@ -7,7 +7,6 @@ import me.ljseokd.basicboard.form.NoticeForm;
 
 import javax.persistence.*;
 
-import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -38,8 +37,10 @@ public class Notice extends DateTimeBaseEntity {
         this.contents = contents;
     }
 
-    public boolean isWriter(Account account) {
-        return this.account.equals(account);
+    public Notice(String title, String contents, Account account) {
+        this.title = title;
+        this.contents = contents;
+        this.account = account;
     }
 
     public void update(NoticeForm noticeForm) {

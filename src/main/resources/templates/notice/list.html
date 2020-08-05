@@ -14,7 +14,7 @@
 <body>
     <div class="row">
         <ul th:each="notice : ${noticePage}">
-            <li th:text="${notice.writer}"></li>
+            <a th:href="@{'/profile/' + ${notice.writer}}"><li th:text="${notice.writer}"></li></a>
             <li>
                 <a th:href="@{'/notice/' + ${notice.noticeId} + '/view'}" th:text="${notice.title}"></a>
             </li>

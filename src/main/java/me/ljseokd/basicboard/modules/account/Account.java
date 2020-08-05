@@ -3,6 +3,7 @@ package me.ljseokd.basicboard.modules.account;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import me.ljseokd.basicboard.modules.account.form.ProfileForm;
 import me.ljseokd.basicboard.modules.notice.Notice;
 
 import javax.persistence.*;
@@ -43,4 +44,7 @@ public class Account {
         return false;
     }
 
+    public void changeDescription(ProfileForm profileForm) {
+        bio = profileForm.getBio();
+    }
 }

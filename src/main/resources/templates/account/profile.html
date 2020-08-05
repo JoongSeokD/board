@@ -7,7 +7,9 @@
 </head>
 <body>
 <p th:text="${profileDto.nickname}"></p>
-<p th:if="${#strings.isEmpty(profileDto.bio) && isOwner}">자기 소개를 추가하세요.</p>
+<p th:if="${#strings.isEmpty(profileDto.bio) && isOwner}">
+    <a th:href="@{/settings/description}">한줄 소개를 추가하세요.</a>
+</p>
 <p th:if="${!#strings.isEmpty(profileDto.bio)}" th:text="${profileDto.bio}"></p>
 
 </body>

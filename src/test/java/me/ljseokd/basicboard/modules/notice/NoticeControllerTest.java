@@ -8,6 +8,7 @@ import me.ljseokd.basicboard.modules.account.AccountRepository;
 import me.ljseokd.basicboard.modules.account.AccountService;
 import me.ljseokd.basicboard.modules.account.WithAccount;
 import me.ljseokd.basicboard.modules.main.form.SignUpForm;
+import me.ljseokd.basicboard.modules.notice.form.NoticeForm;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

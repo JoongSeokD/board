@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.ljseokd.basicboard.infra.auditing.DateTimeBaseEntity;
 import me.ljseokd.basicboard.modules.account.Account;
+import me.ljseokd.basicboard.modules.notice.form.NoticeForm;
 
 import javax.persistence.*;
 

@@ -3,6 +3,7 @@ package me.ljseokd.basicboard.modules.notice;
 import lombok.RequiredArgsConstructor;
 import me.ljseokd.basicboard.modules.account.Account;
 import me.ljseokd.basicboard.modules.account.CurrentAccount;
+import me.ljseokd.basicboard.modules.notice.form.NoticeForm;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;

@@ -1,4 +1,4 @@
-package me.ljseokd.basicboard.modules.notice;
+package me.ljseokd.basicboard.modules.notice.form;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;

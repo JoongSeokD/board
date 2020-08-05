@@ -1,6 +1,6 @@
 package me.ljseokd.basicboard.modules.notice;
 
-import me.ljseokd.basicboard.modules.notice.NoticeDto;
+import me.ljseokd.basicboard.modules.notice.dto.NoticeDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

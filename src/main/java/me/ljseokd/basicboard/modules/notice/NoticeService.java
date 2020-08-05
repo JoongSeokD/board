@@ -2,6 +2,7 @@ package me.ljseokd.basicboard.modules.notice;
 
 import lombok.RequiredArgsConstructor;
 import me.ljseokd.basicboard.modules.account.Account;
+import me.ljseokd.basicboard.modules.notice.form.NoticeForm;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

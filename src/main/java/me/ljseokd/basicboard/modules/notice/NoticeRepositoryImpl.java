@@ -2,7 +2,6 @@ package me.ljseokd.basicboard.modules.notice;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import me.ljseokd.basicboard.modules.account.QAccount;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static me.ljseokd.basicboard.modules.account.QAccount.*;
+import static me.ljseokd.basicboard.modules.account.QAccount.account;
 import static me.ljseokd.basicboard.modules.notice.QNotice.notice;
 
 

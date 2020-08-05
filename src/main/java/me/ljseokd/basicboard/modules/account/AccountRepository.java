@@ -1,6 +1,5 @@
 package me.ljseokd.basicboard.modules.account;
 
-import me.ljseokd.basicboard.modules.account.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 

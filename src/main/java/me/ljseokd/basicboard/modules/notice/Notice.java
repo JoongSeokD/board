@@ -20,6 +20,7 @@ public class Notice extends DateTimeBaseEntity {
     private Long id;
 
     private String title;
+
     @Lob
     private String contents;
 

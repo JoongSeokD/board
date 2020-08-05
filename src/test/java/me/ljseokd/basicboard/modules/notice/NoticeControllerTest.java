@@ -104,12 +104,12 @@ class NoticeControllerTest  extends AbstractContainerBaseTest {
         //when
         mockMvc.perform(get("/notice/" + noticeId + "/view"))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("isWriter"))
+                .andExpect(model().attributeExists("isOwner"))
                 .andExpect(model().attributeExists("notice"))
                 .andExpect(view().name("notice/view"));
 
         //then
-        assertTrue(noticeService.isWriter(notice.getAccount(), account));
+        assertTrue(notice.getAccount().isOwner(account));
     }
 
     @DisplayName("게시글 보기 실패 (없는 경로)")

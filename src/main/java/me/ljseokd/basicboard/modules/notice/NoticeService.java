@@ -19,12 +19,6 @@ public class NoticeService {
         return notice.getId();
     }
 
-    public boolean isWriter(Account noticeAccount, Account account) {
-        if (account != null){
-            return noticeAccount.equals(account);
-        }
-        return false;
-    }
 
     public void update(Long noticeId, NoticeForm noticeForm) {
         Notice notice = noticeRepository.findById(noticeId)

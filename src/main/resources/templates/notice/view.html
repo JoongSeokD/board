@@ -13,10 +13,10 @@
 작성 시간 : <span th:text="${#temporals.format(notice.createDateTime, 'yyyy-MM-dd')}"></span><br/>
 수정 시간 : <span th:text="${#temporals.format(notice.lastModifiedTime, 'yyyy-MM-dd')}"></span><br/>
 
-<form th:if="${isWriter}" th:action="@{'/notice/' + ${notice.id} + '/delete'}" method="post">
+<form th:if="${isOwner}" th:action="@{'/notice/' + ${notice.id} + '/delete'}" method="post">
     <button type="submit">삭제</button>
 </form>
-<a th:if="${isWriter}" th:href="@{'/notice/' + ${notice.id} + '/update'}">수정</a>
+<a th:if="${isOwner}" th:href="@{'/notice/' + ${notice.id} + '/update'}">수정</a>
 <a sec:authorize="isAnonymous()" href="/login">로그인</a>
 <a sec:authorize="isAnonymous()" href="/sign-up">회원 가입</a>
 <a th:href="@{/notice/list}">목록</a>

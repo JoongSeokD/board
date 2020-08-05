@@ -52,7 +52,7 @@ public class NoticeController {
         Notice notice = noticeRepository.findAccountFetchById(noticeId)
                 .orElseThrow(() -> new IllegalArgumentException(String.valueOf(noticeId)));
 
-        model.addAttribute("isWriter", noticeService.isWriter(notice.getAccount(),account));
+        model.addAttribute("isOwner", notice.getAccount().isOwner(account));
         model.addAttribute(notice);
 
         return "notice/view";

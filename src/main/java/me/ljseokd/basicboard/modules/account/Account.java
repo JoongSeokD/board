@@ -35,4 +35,12 @@ public class Account {
         this.nickname = nickname;
         this.password = password;
     }
+
+    public boolean isOwner(Account account) {
+        if (account != null){
+            return this.equals(account);
+        }
+        return false;
+    }
+
 }

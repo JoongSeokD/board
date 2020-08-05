@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>프로필</title>
+</head>
+<body>
+<p th:text="${profileDto.nickname}"></p>
+<p th:if="${#strings.isEmpty(profileDto.bio) && isOwner}">자기 소개를 추가하세요.</p>
+<p th:if="${!#strings.isEmpty(profileDto.bio)}" th:text="${profileDto.bio}"></p>
+
+</body>
+</html>

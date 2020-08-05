@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>자기소개</title>
+</head>
+<body>
+    <form th:action="@{/settings/description}" method="post" th:object="${profileForm}">
+        <input th:field="*{bio}" type="text">
+    </form>
+</body>
+</html>

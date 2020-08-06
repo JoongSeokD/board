@@ -2,6 +2,7 @@ package me.ljseokd.basicboard.modules.notice;
 
 import lombok.RequiredArgsConstructor;
 import me.ljseokd.basicboard.modules.account.Account;
+import me.ljseokd.basicboard.modules.account.AccountRepository;
 import me.ljseokd.basicboard.modules.notice.form.NoticeForm;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,11 +13,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class NoticeService {
 
     private final NoticeRepository noticeRepository;
+    private final AccountRepository accountRepository;
+
 
     public Long createNotice(Account account, NoticeForm noticeForm) {
+
+        String nickname = account.getNickname();
+        Account saveAccount = accountRepository.findByNickname(nickname)
+                .orElseThrow(() -> new IllegalArgumentException(nickname));
+
         Notice notice = new Notice(noticeForm.getTitle(), noticeForm.getContents());
-        notice.addAccount(account);
+        notice.addAccount(saveAccount);
         noticeRepository.save(notice);
+
         return notice.getId();
     }
 
@@ -26,6 +35,5 @@ public class NoticeService {
                 .orElseThrow(() -> new IllegalArgumentException(String.valueOf(noticeId)));
 
         notice.update(noticeForm);
-
     }
 }

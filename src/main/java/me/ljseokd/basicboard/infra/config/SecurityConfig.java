@@ -21,13 +21,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests().mvcMatchers("/", "/login", "/sign-up", "/notice/*/view", "/notice/list", "/profile/*").permitAll()
+        http.authorizeRequests()
+                .mvcMatchers("/", "/login", "/sign-up",
+                        "/notice/*/view", "/notice/list", "/profile/*").permitAll()
                 .anyRequest().authenticated();
 
-        http
-                .formLogin()
-                .loginPage("/login");
+        http.formLogin()
+                .loginPage("/login").permitAll();
 
         http.logout()
                 .logoutSuccessUrl("/");

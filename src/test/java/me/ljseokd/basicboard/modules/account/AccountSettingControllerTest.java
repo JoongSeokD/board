@@ -2,17 +2,14 @@ package me.ljseokd.basicboard.modules.account;
 
 import me.ljseokd.basicboard.infra.MockMvcTest;
 import me.ljseokd.basicboard.modules.main.form.SignUpForm;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -49,7 +46,8 @@ class AccountSettingControllerTest {
     @Test
     @DisplayName("내 소개 설정 성공")
     void descriptionSubmit_success() throws Exception {
-        Account account = accountRepository.findByNickname("ljseokd").get();
+        String username = "ljseokd";
+        Account account = accountRepository.findByNickname(username).get();
         String findBio = account.getBio();
         String setBio = "안녕하세요 잘 부탁드립니다.";
 
@@ -58,7 +56,7 @@ class AccountSettingControllerTest {
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(model().hasNoErrors())
-                .andExpect(view().name("redirect:/settings/description"));
+                .andExpect(view().name("redirect:/profile/" + username));
 
         assertNull(findBio);
         assertNotEquals(findBio, setBio);

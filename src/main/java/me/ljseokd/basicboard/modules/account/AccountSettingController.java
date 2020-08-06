@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
+import static java.nio.charset.StandardCharsets.*;
 
 @Controller
 @RequestMapping("/settings")
@@ -20,11 +24,14 @@ public class AccountSettingController {
 
     private final AccountRepository accountRepository;
 
+    private final AccountService accountService;
+
     private final ModelMapper modelMapper;
 
     private static final String ACCOUNT = "account";
     private static final String SETTINGS = "/settings";
     private static final String DESCRIPTION = "/description";
+    private static final String PROFILE = "/profile";
 
     @GetMapping(DESCRIPTION)
     public String descriptionForm(@CurrentAccount Account account, Model model){
@@ -50,10 +57,10 @@ public class AccountSettingController {
             return ACCOUNT + SETTINGS + DESCRIPTION;
         }
 
-        Account findAccount = getFindByNickname(account.getNickname());
-        findAccount.changeDescription(profileForm);
+        accountService.changeProfile(account, profileForm);
 
-        return "redirect:" + SETTINGS + DESCRIPTION;
+
+        return "redirect:" + PROFILE + "/" + URLEncoder.encode(account.getNickname(), UTF_8);
     }
 
 

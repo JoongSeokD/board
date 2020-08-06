@@ -33,8 +33,7 @@ public class NoticeController {
     @PostMapping("/new")
     public String createNotice(@CurrentAccount Account account,
                                @Valid @ModelAttribute NoticeForm noticeForm,
-                               Errors errors,
-                               Model model){
+                               Errors errors,Model model){
 
         if (errors.hasErrors()){
             model.addAttribute("noticeForm",noticeForm);

@@ -4,9 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <title>프로필</title>
+    <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/node_modules/jdenticon/dist/jdenticon.min.js"></script>
 </head>
 <body>
-<p th:text="${profileDto.nickname}"></p>
+<h2 th:text="${profileDto.nickname}"></h2>
+<svg class="img-fluid float-left rounded img-thumbnail"
+     th:data-jdenticon-value="${profileDto.nickname}" width="125" height="125"></svg>
 <p th:if="${#strings.isEmpty(profileDto.bio) && isOwner}">
     <a th:href="@{/settings/description}">한줄 소개를 추가하세요.</a>
 </p>

@@ -1,6 +1,7 @@
 package me.ljseokd.basicboard.modules.account;
 
 import lombok.RequiredArgsConstructor;
+import me.ljseokd.basicboard.modules.account.form.ProfileForm;
 import me.ljseokd.basicboard.modules.main.form.SignUpForm;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,6 +31,8 @@ public class AccountService implements UserDetailsService {
         return save.getId();
     }
 
+
+
     private void login(Account account) {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 new UserAccount(account),
@@ -42,9 +45,18 @@ public class AccountService implements UserDetailsService {
     @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account account = accountRepository.findByNickname(username)
-                .orElseThrow(() ->  new UsernameNotFoundException(username));
+        Account account = findByNickname(username);
 
         return new UserAccount(account);
+    }
+
+    private Account findByNickname(String username) {
+        return accountRepository.findByNickname(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username));
+    }
+
+    public void changeProfile(Account account, ProfileForm profileForm) {
+        Account byNickname = findByNickname(account.getNickname());
+        byNickname.changeProfile(profileForm);
     }
 }

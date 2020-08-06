@@ -44,7 +44,7 @@ public class Account {
         return false;
     }
 
-    public void changeDescription(ProfileForm profileForm) {
+    public void changeProfile(ProfileForm profileForm) {
         bio = profileForm.getBio();
     }
 }

@@ -7,6 +7,8 @@ import me.ljseokd.basicboard.modules.account.Account;
 import me.ljseokd.basicboard.modules.notice.form.NoticeForm;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 import static javax.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
@@ -27,7 +29,10 @@ public class Notice extends DateTimeBaseEntity {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "account_id")
-    Account account;
+    private Account account;
+
+    @OneToMany(mappedBy = "notice")
+    private Set<NoticeTag> noticeTags = new HashSet<>();
 
     public void addAccount(Account account){
         this.account = account;

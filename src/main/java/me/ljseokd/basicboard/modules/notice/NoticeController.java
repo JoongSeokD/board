@@ -4,8 +4,11 @@ import lombok.RequiredArgsConstructor;
 import me.ljseokd.basicboard.modules.account.Account;
 import me.ljseokd.basicboard.modules.account.CurrentAccount;
 import me.ljseokd.basicboard.modules.notice.form.NoticeForm;
+import me.ljseokd.basicboard.modules.notice.form.TagForm;
+import me.ljseokd.basicboard.modules.tag.TagService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -23,6 +26,7 @@ public class NoticeController {
     private final NoticeService noticeService;
     private final NoticeRepository noticeRepository;
     private final ModelMapper modelMapper;
+    private final TagService tagService;
 
     @GetMapping("/new")
     public String createNoticeForm(Model model){
@@ -100,4 +104,15 @@ public class NoticeController {
         model.addAttribute("noticePage", noticeRepository.page(pageable));
         return "notice/list";
     }
+
+    @PostMapping("/{noticeId}/tag/add")
+    @ResponseBody
+    public ResponseEntity tagAdd(@CurrentAccount Account account,
+                         @PathVariable Long noticeId,
+                         @RequestBody TagForm tagForm){
+
+        tagService.createTag(noticeId, account, tagForm);
+        return ResponseEntity.ok().build();
+    }
+
 }

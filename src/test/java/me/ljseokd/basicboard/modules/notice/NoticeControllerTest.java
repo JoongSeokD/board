@@ -1,5 +1,6 @@
 package me.ljseokd.basicboard.modules.notice;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import me.ljseokd.basicboard.infra.AbstractContainerBaseTest;
 import me.ljseokd.basicboard.infra.MockMvcTest;
@@ -9,14 +10,19 @@ import me.ljseokd.basicboard.modules.account.AccountService;
 import me.ljseokd.basicboard.modules.account.WithAccount;
 import me.ljseokd.basicboard.modules.main.form.SignUpForm;
 import me.ljseokd.basicboard.modules.notice.form.NoticeForm;
+import me.ljseokd.basicboard.modules.notice.form.TagForm;
+import me.ljseokd.basicboard.modules.tag.TagRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Commit;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.persistence.EntityManager;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -45,6 +51,15 @@ class NoticeControllerTest  extends AbstractContainerBaseTest {
 
     @Autowired
     EntityManager entityManager;
+
+    @Autowired
+    ObjectMapper objectMapper;
+
+    @Autowired
+    TagRepository tagRepository;
+
+    @Autowired
+    NoticeTagRepository noticeTagRepository;
 
     @DisplayName("게시글 등록 페이지")
     @Test
@@ -251,6 +266,40 @@ class NoticeControllerTest  extends AbstractContainerBaseTest {
                 .andExpect(model().attributeExists("noticePage"))
                 .andExpect(view().name("notice/list"))
                 .andDo(print());
+    }
+
+    @DisplayName("태그 추가 성공")
+    @Test
+    @WithAccount("ljseokd")
+    @Commit
+    void addTag_success() throws Exception {
+        //given
+        Account account = accountRepository.findByNickname("ljseokd").get();
+
+        NoticeForm noticeForm = new NoticeForm();
+        noticeForm.setTitle("title");
+        noticeForm.setContents("contents");
+        Long noticeId = noticeService.createNotice(account, noticeForm);
+
+        TagForm tagForm = new TagForm();
+        tagForm.setTagTitle("tag~!");
+
+        //when
+        mockMvc.perform(post("/notice/"+noticeId+"/tag/add")
+                .contentType(APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(tagForm))
+                .with(csrf()))
+                .andExpect(status().isOk());
+
+        //then
+        Set<NoticeTag> byNoticeId = noticeTagRepository.findByNoticeId(noticeId);
+        for (NoticeTag noticeTag : byNoticeId) {
+            assertNotNull(noticeTag);
+            assertEquals(1, byNoticeId.size());
+            assertEquals(noticeId, noticeTag.getNotice().getId());
+            assertEquals(tagForm.getTagTitle(), noticeTag.getTag().getTitle());
+        }
+
     }
 
 }

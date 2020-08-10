@@ -1,13 +1,20 @@
 package me.ljseokd.basicboard.modules.notice;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import me.ljseokd.basicboard.modules.account.Account;
 import me.ljseokd.basicboard.modules.account.CurrentAccount;
 import me.ljseokd.basicboard.modules.notice.form.NoticeForm;
 import me.ljseokd.basicboard.modules.notice.form.TagForm;
+import me.ljseokd.basicboard.modules.reply.Reply;
+import me.ljseokd.basicboard.modules.reply.ReplyRepository;
+import me.ljseokd.basicboard.modules.reply.ReplyService;
+import me.ljseokd.basicboard.modules.reply.form.ReplyForm;
 import me.ljseokd.basicboard.modules.tag.TagService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,6 +35,10 @@ public class NoticeController {
     private final NoticeRepository noticeRepository;
     private final ModelMapper modelMapper;
     private final TagService tagService;
+    private final ReplyService replyService;
+    private final ReplyRepository replyRepository;
+    private final ObjectMapper objectMapper;
+
 
     @GetMapping("/new")
     public String createNoticeForm(Model model){
@@ -54,10 +66,11 @@ public class NoticeController {
                              Model model){
 
         Notice notice = noticeRepository.findAccountFetchById(noticeId)
-                .orElseThrow(() -> new IllegalArgumentException(String.valueOf(noticeId)));
+                .orElseThrow(() -> new IllegalArgumentException(String.valueOf(noticeId)));;
 
         model.addAttribute("isOwner", notice.getAccount().isOwner(account));
         model.addAttribute(notice);
+        model.addAttribute(new ReplyForm());
 
         return "notice/view";
     }
@@ -113,6 +126,25 @@ public class NoticeController {
 
         tagService.createTag(noticeId, account, tagForm);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{noticeId}/reply/add")
+    @ResponseBody
+    public ResponseEntity replyAdd(@CurrentAccount Account account,
+                                   @PathVariable Long noticeId,
+                                   @Valid @RequestBody ReplyForm replyForm, Errors errors){
+        if (errors.hasErrors()){
+            return ResponseEntity.badRequest().body("내용이 없는 글 작성");
+        }
+        replyService.addReply(account, noticeId, replyForm);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{noticeId}/reply")
+    @ResponseBody
+    public ResponseEntity replyList (@PathVariable Long noticeId) throws JsonProcessingException {
+        List<Reply> replyList = replyRepository.findByNoticeId(noticeId);
+        return ResponseEntity.ok(objectMapper.writeValueAsString(replyList));
     }
 
 }

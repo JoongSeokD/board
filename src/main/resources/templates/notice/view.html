@@ -2,6 +2,11 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/node_modules/summernote/dist/summernote-bs4.min.css">
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <head>
     <meta charset="UTF-8">
     <title>글 보기</title>
@@ -13,6 +18,14 @@
 작성 시간 : <span th:text="${#temporals.format(notice.createDateTime, 'yyyy-MM-dd')}"></span><br/>
 수정 시간 : <span th:text="${#temporals.format(notice.lastModifiedTime, 'yyyy-MM-dd')}"></span><br/>
 
+<form sec:authorize="isAuthenticated()" class="needs-validation col-sm-10" th:action="@{'/notice/' + ${notice.id} + '/reply/add'}" th:object="${replyForm}" method="post">
+    <textarea type="textarea" th:field="*{contents}" class="editor" required></textarea>
+    <button id="replyBtn" type="button">작성</button>
+</form>
+<div id="replyList">
+
+</div>
+
 <form th:if="${isOwner}" th:action="@{'/notice/' + ${notice.id} + '/delete'}" method="post">
     <button type="submit">삭제</button>
 </form>
@@ -20,5 +33,71 @@
 <a sec:authorize="isAnonymous()" href="/login">로그인</a>
 <a sec:authorize="isAnonymous()" href="/sign-up">회원 가입</a>
 <a th:href="@{/notice/list}">목록</a>
+
+
+<script type="application/javascript" th:inline="javascript">
+    var noticeId = "[(${notice.id})]";
+    $(function() {
+        var csrfToken = /*[[${_csrf.token}]]*/ null;
+        var csrfHeader = /*[[${_csrf.headerName}]]*/ null;
+        $(document).ajaxSend(function (e, xhr, options) {
+            xhr.setRequestHeader(csrfHeader, csrfToken);
+        });
+
+
+        $("#replyBtn").on("click", function (){
+            let contents = $(".editor").val();
+            replyRequest(contents);
+        })
+
+
+    });
+    function replyRequest(contents) {
+        $.ajax({
+            // dataType: "json",
+            autocomplete: {
+                enabled: true,
+                rightKey: true,
+            },
+            contentType: "application/json; charset=utf-8",
+            method: "POST",
+            url: "/notice/" + noticeId + "/reply/add",
+            data: JSON.stringify({'contents': contents})
+        }).done(function (data, status) {
+            getReplyList();
+        }).fail(function(xhr, status, errorThrown) {
+            console.log("${status} and status is ${errorThrown}");
+        });
+    }
+    function getReplyList(){
+        $.ajax({
+            dataType: "json",
+            autocomplete: {
+                enabled: true,
+                rightKey: true,
+            },
+            contentType: "application/json; charset=utf-8",
+            method: "POST",
+            url: "/notice/" + noticeId + "/reply"
+        }).done(function (data, status) {
+           console.log(data);
+        }).fail(function(xhr, status, errorThrown) {
+
+        });
+    }
+</script>
+<script src="/node_modules/summernote/dist/summernote-bs4.js"></script>
+<script>
+    $(function (){
+        $(".editor").summernote({
+            fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Nato Sans KR', 'Merriweather'],
+            placeholder: '내용을 입력하세요',
+            tabSize: 2,
+            height:100
+        });
+    });
+</script>
+
+
 </body>
 </html>

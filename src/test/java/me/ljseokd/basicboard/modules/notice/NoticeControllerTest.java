@@ -11,6 +11,8 @@ import me.ljseokd.basicboard.modules.account.WithAccount;
 import me.ljseokd.basicboard.modules.main.form.SignUpForm;
 import me.ljseokd.basicboard.modules.notice.form.NoticeForm;
 import me.ljseokd.basicboard.modules.notice.form.TagForm;
+import me.ljseokd.basicboard.modules.reply.Reply;
+import me.ljseokd.basicboard.modules.reply.form.ReplyForm;
 import me.ljseokd.basicboard.modules.tag.TagRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,7 @@ import org.springframework.test.annotation.Commit;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -299,6 +302,36 @@ class NoticeControllerTest  extends AbstractContainerBaseTest {
             assertEquals(noticeId, noticeTag.getNotice().getId());
             assertEquals(tagForm.getTagTitle(), noticeTag.getTag().getTitle());
         }
+    }
+
+    @DisplayName("댓글 추가")
+    @Test
+    @WithAccount("ljseokd")
+    @Commit
+    void add_reply() throws Exception {
+        //given
+        Account account = accountRepository.findByNickname("ljseokd").get();
+
+        NoticeForm noticeForm = new NoticeForm();
+        noticeForm.setTitle("title");
+        noticeForm.setContents("contents");
+        Long noticeId = noticeService.createNotice(account, noticeForm);
+
+        ReplyForm replyForm = new ReplyForm();
+        replyForm.setContents("contents~!");
+        //when
+        mockMvc.perform(post("/notice/"+noticeId+"/reply/add")
+                .contentType(APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(replyForm))
+                .with(csrf()))
+                .andExpect(status().isOk());
+        //then
+        Notice notice =  noticeRepository.findByIdFetchReply(noticeId).get();
+        assertEquals(1, notice.getReplyList().size());
+        Reply reply = notice.getReplyList().get(0);
+        assertNotNull(reply);
+        assertEquals("ljseokd",reply.getAccount().getNickname());
+        assertEquals("contents~!", reply.getContents());
 
     }
 

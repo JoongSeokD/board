@@ -5,9 +5,13 @@ import lombok.NoArgsConstructor;
 import me.ljseokd.basicboard.infra.auditing.DateTimeBaseEntity;
 import me.ljseokd.basicboard.modules.account.Account;
 import me.ljseokd.basicboard.modules.notice.form.NoticeForm;
+import me.ljseokd.basicboard.modules.reply.Reply;
+import me.ljseokd.basicboard.modules.reply.form.ReplyForm;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static javax.persistence.FetchType.LAZY;
@@ -31,6 +35,9 @@ public class Notice extends DateTimeBaseEntity {
     @JoinColumn(name = "account_id")
     private Account account;
 
+    @OneToMany(mappedBy = "notice", cascade = CascadeType.ALL)
+    private List<Reply> replyList = new ArrayList<>();
+
     @OneToMany(mappedBy = "notice")
     private Set<NoticeTag> noticeTags = new HashSet<>();
 
@@ -53,5 +60,9 @@ public class Notice extends DateTimeBaseEntity {
     public void update(NoticeForm noticeForm) {
         title = noticeForm.getTitle();
         contents = noticeForm.getContents();
+    }
+
+    public void addReply(Reply reply) {
+        this.replyList.add(reply);
     }
 }

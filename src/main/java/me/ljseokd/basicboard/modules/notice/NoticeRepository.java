@@ -10,4 +10,7 @@ import java.util.Optional;
 public interface NoticeRepository extends JpaRepository<Notice, Long>, NoticeRepositoryCustom {
     @Query("select n from Notice n join fetch n.account where n.id = ?1")
     Optional<Notice> findAccountFetchById(Long noticeId);
+
+    @Query("select n from Notice n join fetch n.replyList where n.id = ?1")
+    Optional<Notice> findByIdFetchReply(Long noticeId);
 }

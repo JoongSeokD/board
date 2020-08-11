@@ -7,14 +7,13 @@ import me.ljseokd.basicboard.modules.account.Account;
 import me.ljseokd.basicboard.modules.account.CurrentAccount;
 import me.ljseokd.basicboard.modules.notice.form.NoticeForm;
 import me.ljseokd.basicboard.modules.notice.form.TagForm;
-import me.ljseokd.basicboard.modules.reply.Reply;
 import me.ljseokd.basicboard.modules.reply.ReplyRepository;
 import me.ljseokd.basicboard.modules.reply.ReplyService;
+import me.ljseokd.basicboard.modules.reply.dto.ReplyDto;
 import me.ljseokd.basicboard.modules.reply.form.ReplyForm;
 import me.ljseokd.basicboard.modules.tag.TagService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -142,9 +141,17 @@ public class NoticeController {
 
     @PostMapping("/{noticeId}/reply")
     @ResponseBody
-    public ResponseEntity replyList (@PathVariable Long noticeId) throws JsonProcessingException {
-        List<Reply> replyList = replyRepository.findByNoticeId(noticeId);
-        return ResponseEntity.ok(objectMapper.writeValueAsString(replyList));
+    public ResponseEntity replyList (@CurrentAccount Account account,
+                                     @PathVariable Long noticeId)
+            throws JsonProcessingException {
+
+        List<ReplyDto> byReply = replyRepository.findByReply(noticeId);
+        if (account != null){
+            byReply.forEach(r ->
+                    r.setOwner(r.getWriter().equals(account.getNickname())));
+        }
+
+        return ResponseEntity.ok(objectMapper.writeValueAsString(byReply));
     }
 
 }

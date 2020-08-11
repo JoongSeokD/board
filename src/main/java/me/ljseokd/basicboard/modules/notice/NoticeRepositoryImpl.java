@@ -3,6 +3,7 @@ package me.ljseokd.basicboard.modules.notice;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import me.ljseokd.basicboard.modules.notice.dto.NoticeDto;
+import me.ljseokd.basicboard.modules.notice.dto.QNoticeDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +27,7 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom{
     public Page<NoticeDto> page(Pageable pageable) {
         QueryResults<NoticeDto> results = queryFactory
                 .select(new QNoticeDto(
-                        account.nickname,
+                        notice.account.nickname,
                         notice.title,
                         notice.createDateTime,
                         notice.id))

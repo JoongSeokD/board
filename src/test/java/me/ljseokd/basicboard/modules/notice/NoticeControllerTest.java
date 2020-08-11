@@ -12,8 +12,10 @@ import me.ljseokd.basicboard.modules.main.form.SignUpForm;
 import me.ljseokd.basicboard.modules.notice.form.NoticeForm;
 import me.ljseokd.basicboard.modules.notice.form.TagForm;
 import me.ljseokd.basicboard.modules.reply.Reply;
+import me.ljseokd.basicboard.modules.reply.ReplyService;
 import me.ljseokd.basicboard.modules.reply.form.ReplyForm;
 import me.ljseokd.basicboard.modules.tag.TagRepository;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +23,9 @@ import org.springframework.test.annotation.Commit;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.persistence.EntityManager;
-import java.util.List;
 import java.util.Set;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -63,6 +65,9 @@ class NoticeControllerTest  extends AbstractContainerBaseTest {
 
     @Autowired
     NoticeTagRepository noticeTagRepository;
+
+    @Autowired
+    ReplyService replyService;
 
     @DisplayName("게시글 등록 페이지")
     @Test
@@ -274,7 +279,6 @@ class NoticeControllerTest  extends AbstractContainerBaseTest {
     @DisplayName("태그 추가 성공")
     @Test
     @WithAccount("ljseokd")
-    @Commit
     void addTag_success() throws Exception {
         //given
         Account account = accountRepository.findByNickname("ljseokd").get();
@@ -307,7 +311,6 @@ class NoticeControllerTest  extends AbstractContainerBaseTest {
     @DisplayName("댓글 추가")
     @Test
     @WithAccount("ljseokd")
-    @Commit
     void add_reply() throws Exception {
         //given
         Account account = accountRepository.findByNickname("ljseokd").get();
@@ -332,7 +335,33 @@ class NoticeControllerTest  extends AbstractContainerBaseTest {
         assertNotNull(reply);
         assertEquals("ljseokd",reply.getAccount().getNickname());
         assertEquals("contents~!", reply.getContents());
+    }
 
+    @DisplayName("게시글의 댓글 리스트")
+    @Test
+    @WithAccount("ljseokd")
+    void reply_list() throws Exception {
+        //given
+        Account account = accountRepository.findByNickname("ljseokd").get();
+
+        NoticeForm noticeForm = new NoticeForm();
+        noticeForm.setTitle("title");
+        noticeForm.setContents("contents");
+        Long noticeId = noticeService.createNotice(account, noticeForm);
+
+        ReplyForm replyForm = new ReplyForm();
+        replyForm.setContents("contents~!");
+        replyService.addReply(account, noticeId, replyForm);
+        //when
+        mockMvc.perform(post("/notice/"+noticeId+"/reply")
+                .contentType(APPLICATION_JSON)
+                .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(1)))
+                .andExpect(jsonPath("$[0].writer", Matchers.is("ljseokd")))
+                .andExpect(jsonPath("$[0].contents", Matchers.is("contents~!")))
+                .andDo(print())
+        ;
     }
 
 }

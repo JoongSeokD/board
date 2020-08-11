@@ -23,7 +23,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .mvcMatchers("/", "/login", "/sign-up",
-                        "/notice/*/view", "/notice/list", "/profile/*").permitAll()
+                        "/notice/*/view", "/notice/list", "/profile/*",
+                        "notice/*/reply"
+                        ).permitAll()
                 .anyRequest().authenticated();
 
         http.formLogin()

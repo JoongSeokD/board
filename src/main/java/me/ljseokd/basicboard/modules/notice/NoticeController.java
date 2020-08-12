@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -48,10 +49,11 @@ public class NoticeController {
     @PostMapping("/new")
     public String createNotice(@CurrentAccount Account account,
                                @Valid @ModelAttribute NoticeForm noticeForm,
-                               Errors errors,Model model){
+                               Errors errors,Model model,
+                               @RequestParam MultipartFile[] file){
 
         if (errors.hasErrors()){
-            model.addAttribute("noticeForm",noticeForm);
+            model.addAttribute("noticeForm", noticeForm);
             return "/notice/create-notice-form";
         }
 
@@ -135,6 +137,7 @@ public class NoticeController {
         if (errors.hasErrors()){
             return ResponseEntity.badRequest().body("내용이 없는 글 작성");
         }
+
         replyService.addReply(account, noticeId, replyForm);
         return ResponseEntity.ok().build();
     }
@@ -153,5 +156,7 @@ public class NoticeController {
 
         return ResponseEntity.ok(objectMapper.writeValueAsString(byReply));
     }
+
+
 
 }

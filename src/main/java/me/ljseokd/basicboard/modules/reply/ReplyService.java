@@ -16,6 +16,7 @@ public class ReplyService {
 
     private final NoticeRepository noticeRepository;
     private final AccountRepository accountRepository;
+    private final ReplyRepository replyRepository;
 
 
     public void addReply(Account account, Long noticeId, ReplyForm replyForm) {
@@ -26,5 +27,11 @@ public class ReplyService {
                 .orElseThrow(() -> new IllegalArgumentException(nickname));
 
         new Reply(findAccount, notice, replyForm.getContents());
+    }
+
+    public void modifyContents(Long replyId, String contents) {
+        Reply reply = replyRepository.findById(replyId)
+                .orElseThrow(() -> new IllegalArgumentException(String.valueOf(replyId)));
+        reply.modifyContents(contents);
     }
 }

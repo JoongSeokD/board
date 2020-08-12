@@ -54,7 +54,7 @@
     });
     function replyRequest(id,option) {
         let contents = $(".editor").val();
-        if(!option == 'add'){
+        if(option != 'add'){
             contents = $("#modifyEditor").next().find(".note-editable.card-block").html();
         }else {
             id = "[(${notice.id})]";
@@ -120,7 +120,7 @@
     }
     function open_editor(e, id){
         $(e).after("<a class='editCancelBtn' href='#editCancel'>취소</a>");
-        $(e).after("<a class='modifyConfirmBtn' href='#modifyConfirm' onclick='replyRequest("+id+", 'modify')'>확인</a>");
+        $(e).after('<a class="modifyConfirmBtn" href="#modifyConfirm" onclick="replyRequest('+id+', \'modify\')">확인</a>');
 
         $(e).siblings(".modifyEditor").attr("id", "modifyEditor");
         $(e).siblings(".removeBtn").remove();

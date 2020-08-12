@@ -17,6 +17,7 @@ import static lombok.AccessLevel.PROTECTED;
 public class Reply extends DateTimeBaseEntity {
 
     @Id @GeneratedValue
+    @Column(name = "reply_id")
     private Long id;
 
     @Lob
@@ -35,5 +36,9 @@ public class Reply extends DateTimeBaseEntity {
         this.notice = notice;
         this.contents = contents;
         this.notice.addReply(this);
+    }
+
+    public void modifyContents(String contents) {
+        this.contents = contents;
     }
 }

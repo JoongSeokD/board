@@ -30,8 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -84,7 +83,7 @@ class NoticeControllerTest  extends AbstractContainerBaseTest {
     @Test
     @WithAccount("ljseokd")
     void create_notice_success() throws Exception {
-        mockMvc.perform(post("/notice/new")
+        mockMvc.perform(multipart("/notice/new")
                 .param("title", "타이틀")
                 .param("contents", "내용")
                 .with(csrf()))
@@ -97,7 +96,7 @@ class NoticeControllerTest  extends AbstractContainerBaseTest {
     @Test
     @WithAccount("ljseokd")
     void create_notice_fail() throws Exception {
-        mockMvc.perform(post("/notice/new")
+        mockMvc.perform(multipart("/notice/new")
                 .param("title", "타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀타이틀")
                 .param("contents", "내용")
                 .with(csrf()))

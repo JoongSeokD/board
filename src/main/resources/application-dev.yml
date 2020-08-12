@@ -21,3 +21,5 @@ logging.level:
   org.springframework:
     security: DEBUG
 
+app:
+  path: "C:/board_atch"

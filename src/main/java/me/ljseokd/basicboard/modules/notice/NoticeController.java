@@ -157,6 +157,18 @@ public class NoticeController {
         return ResponseEntity.ok(objectMapper.writeValueAsString(byReply));
     }
 
+    @PostMapping("/{replyId}/reply/modify")
+    @ResponseBody
+    public ResponseEntity replyModify(@PathVariable Long replyId,
+                                      @Valid @RequestBody ReplyForm replyForm,
+                                      Errors errors){
+        if (errors.hasErrors()){
+            return ResponseEntity.badRequest().body("내용이 없는 글 작성");
+        }
+        replyService.modifyContents(replyId, replyForm.getContents());
+        return ResponseEntity.ok().build();
+    }
+
 
 
 }

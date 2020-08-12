@@ -36,7 +36,7 @@
 
 
 <script type="application/javascript" th:inline="javascript">
-    var noticeId = "[(${notice.id})]";
+
     $(function() {
         var csrfToken = /*[[${_csrf.token}]]*/ null;
         var csrfHeader = /*[[${_csrf.headerName}]]*/ null;
@@ -46,13 +46,19 @@
 
 
         $("#replyBtn").on("click", function (){
-            let contents = $(".editor").val();
-            replyRequest(contents);
+            let tempId = 1;
+            replyRequest(tempId,'add');
         })
         getReplyList();
 
     });
-    function replyRequest(contents) {
+    function replyRequest(id,option) {
+        let contents = $(".editor").val();
+        if(!option == 'add'){
+            contents = $("#modifyEditor").next().find(".note-editable.card-block").html();
+        }else {
+            id = "[(${notice.id})]";
+        }
         $.ajax({
             // dataType: "json",
             autocomplete: {
@@ -61,7 +67,7 @@
             },
             contentType: "application/json; charset=utf-8",
             method: "POST",
-            url: "/notice/" + noticeId + "/reply/add",
+            url: "/notice/" + id + "/reply/" + option,
             data: JSON.stringify({'contents': contents})
         }).done(function (data, status) {
             getReplyList();
@@ -72,26 +78,77 @@
         });
     }
     function getReplyList(){
+        $("#replyList").html("");
         $.ajax({
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             method: "POST",
-            url: "/notice/" + noticeId + "/reply"
+            url: "/notice/[(${notice.id})]/reply"
         }).done(function (data, status) {
-            var html = "<div>";
-            console.log(data.length)
-            for (let i = 0; i < data.length; i++) {
-                html += "<a href='/profile/" + data[i].writer + "' >" + data[i].writer + "</a>";
-                html += "<p>" + data[i].createdDate + "</p>";
-                html += data[i].contents;
-                console.log();
-            }
-            html += "</div>";
-            $("#replyList").html(html);
-           console.log(data);
+            buildReplyHtml(data);
         }).fail(function(xhr, status, errorThrown) {
 
         });
+    }
+    function buildReplyHtml(data){
+        for (let i = 0; i < data.length; i++) {
+            var html = "<hr>";
+            html += "<div>";
+            html += "<a href='/profile/" + data[i].writer + "' >" + data[i].writer + "</a>";
+            html += "<p>" + data[i].createdDate + "</p>";
+            if(data[i].owner){
+                let id = data[i].id;
+                html += "<a class='modifyBtn' href='#modify' onclick='modifyEdit(this, " + id + ")'>수정</a>";
+                html += "<a class='removeBtn' href='#remove'>삭제</a>";
+            }
+
+            html +=  "<div class='modifyEditor'>" + data[i].contents + "</div>";
+            html += "</div>";
+            $("#replyList").append(html);
+        }
+    }
+    function modifyEdit(e, id){
+        if(document.getElementById("modifyEditor") == null){
+            open_editor(e, id);
+        } else {
+            if(confirm("수정 중인 내용을 취소하시겠습니까?")){
+                clear_editor();
+                open_editor(e, id);
+            }
+        }
+
+    }
+    function open_editor(e, id){
+        $(e).after("<a class='editCancelBtn' href='#editCancel'>취소</a>");
+        $(e).after("<a class='modifyConfirmBtn' href='#modifyConfirm' onclick='replyRequest("+id+", 'modify')'>확인</a>");
+
+        $(e).siblings(".modifyEditor").attr("id", "modifyEditor");
+        $(e).siblings(".removeBtn").remove();
+        $(e).remove();
+        $("#modifyEditor").summernote({
+            fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Nato Sans KR', 'Merriweather'],
+            placeholder: '내용을 입력하세요',
+            tabSize: 2,
+            height:100
+        });
+    }
+    function clear_editor(){
+        let $modifyEditor = $("#modifyEditor");
+        $modifyEditor.removeAttr("style");
+        $modifyEditor.siblings(".note-editor.note-frame").remove();
+
+        let modifyCnfBtn = ".modifyConfirmBtn";
+        $modifyEditor.siblings(modifyCnfBtn).text("수정");
+        $modifyEditor.siblings(modifyCnfBtn).attr("href","#modify");
+        $modifyEditor.siblings(modifyCnfBtn).attr("onclick", "modifyEdit(this)");
+        $modifyEditor.siblings(modifyCnfBtn).attr("class", "modifyBtn");
+
+        let cancelBtn = ".editCancelBtn";
+        $modifyEditor.siblings(cancelBtn).text("삭제");
+        $modifyEditor.siblings(cancelBtn).attr("href","#remove");
+        $modifyEditor.siblings(cancelBtn).attr("class", "removeBtn");
+
+        $modifyEditor.attr("id", "modifyEditorTemp");
     }
 </script>
 <script src="/node_modules/summernote/dist/summernote-bs4.js"></script>

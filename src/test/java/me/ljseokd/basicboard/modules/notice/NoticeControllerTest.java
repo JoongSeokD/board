@@ -363,4 +363,36 @@ class NoticeControllerTest  extends AbstractContainerBaseTest {
         ;
     }
 
+    @DisplayName("댓글 수정")
+    @Test
+    @WithAccount("ljseokd")
+    void modify_reply() throws Exception {
+        //given
+        Account account = accountRepository.findByNickname("ljseokd").get();
+
+        NoticeForm noticeForm = new NoticeForm();
+        noticeForm.setTitle("title");
+        noticeForm.setContents("contents");
+        Long noticeId = noticeService.createNotice(account, noticeForm);
+
+        ReplyForm replyForm = new ReplyForm();
+        replyForm.setContents("contents~!");
+
+        replyService.addReply(account, noticeId, replyForm);
+
+        Notice notice = noticeRepository.findByIdFetchReply(noticeId).get();
+        Reply reply = notice.getReplyList().get(0);
+
+        Long addReplyId = reply.getId();
+        replyForm.setContents("contentsModify");
+        //when
+        mockMvc.perform(post("/notice/"+addReplyId+"/reply/modify")
+                .contentType(APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(replyForm))
+                .with(csrf()))
+                .andExpect(status().isOk());
+        //then
+        assertEquals("contentsModify", reply.getContents());
+    }
+
 }

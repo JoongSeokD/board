@@ -11,8 +11,12 @@
     <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-    <form class="needs-validation col-sm-10" th:action="@{/notice/new}" th:object="${noticeForm}" method="post">
+    <form class="needs-validation col-sm-10" th:action="@{/notice/new}" th:object="${noticeForm}"
+          method="post" enctype="multipart/form-data">
         <input type="text" name="title" th:field="*{title}" placeholder="제목을 입력하세요" required><br/>
+        <div id="fileList">
+            <button type="button" onclick="addFile($(this))">파일 추가</button>
+        </div>
 
         <textarea type="textarea" th:field="*{contents}" class="editor" required></textarea>
         <button type="submit">작성하기</button>
@@ -20,6 +24,20 @@
 
     <script src="/node_modules/summernote/dist/summernote-bs4.js"></script>
     <script>
+        function addFile(e){
+            fileCount = $("#fileList").children().length / 2;
+            if (fileCount > 5){
+                return;
+            }
+            e.after("<button type='button' onclick='removeFile($(this))'>삭제</button>");
+            e.after("<input type='file' name='file'>");
+
+        }
+        function removeFile(e){
+            e.prev().remove();
+            e.remove();
+        }
+
         $(function (){
             $(".editor").summernote({
                 fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Nato Sans KR', 'Merriweather'],

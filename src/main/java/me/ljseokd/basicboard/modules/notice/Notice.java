@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.ljseokd.basicboard.infra.auditing.DateTimeBaseEntity;
 import me.ljseokd.basicboard.modules.account.Account;
-import me.ljseokd.basicboard.modules.file.AttachedFile;
+import me.ljseokd.basicboard.modules.file.AttacheFile;
 import me.ljseokd.basicboard.modules.notice.form.NoticeForm;
 import me.ljseokd.basicboard.modules.reply.Reply;
 
@@ -42,7 +42,7 @@ public class Notice extends DateTimeBaseEntity {
     private Set<NoticeTag> noticeTags = new HashSet<>();
 
     @OneToMany(mappedBy = "notice", cascade = CascadeType.ALL)
-    private Set<AttachedFile> fileList = new HashSet<>();
+    private Set<AttacheFile> fileList = new HashSet<>();
 
     public void addAccount(Account account){
         this.account = account;
@@ -67,5 +67,10 @@ public class Notice extends DateTimeBaseEntity {
 
     public void addReply(Reply reply) {
         this.replyList.add(reply);
+    }
+
+    public void addFiles(Set<AttacheFile> attacheFiles) {
+        fileList = attacheFiles;
+        fileList.forEach(attacheFile -> attacheFile.addNotice(this));
     }
 }

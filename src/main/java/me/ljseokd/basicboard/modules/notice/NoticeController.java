@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import me.ljseokd.basicboard.modules.account.Account;
 import me.ljseokd.basicboard.modules.account.CurrentAccount;
+import me.ljseokd.basicboard.modules.file.AttacheFile;
+import me.ljseokd.basicboard.modules.file.AttacheFileService;
 import me.ljseokd.basicboard.modules.notice.form.NoticeForm;
 import me.ljseokd.basicboard.modules.notice.form.TagForm;
 import me.ljseokd.basicboard.modules.reply.ReplyRepository;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
@@ -38,6 +42,8 @@ public class NoticeController {
     private final ReplyService replyService;
     private final ReplyRepository replyRepository;
     private final ObjectMapper objectMapper;
+    private final AttacheFileService attacheFileService;
+
 
 
     @GetMapping("/new")
@@ -58,6 +64,11 @@ public class NoticeController {
         }
 
         Long createdId = noticeService.createNotice(account, noticeForm);
+
+        if (file.length > 0){
+            attacheFileService.addAttacheFile(createdId, file);
+        }
+
         return "redirect:/notice/" + createdId + "/view";
     }
 

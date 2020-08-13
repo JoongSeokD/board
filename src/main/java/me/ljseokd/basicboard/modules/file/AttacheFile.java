@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AttachedFile {
+public class AttacheFile {
 
     @Id @GeneratedValue
     @Column(name = "atch_file_id")
@@ -25,4 +25,14 @@ public class AttachedFile {
     @JoinColumn(name = "notice_id")
     private Notice notice;
 
+    public AttacheFile(String orgFileName, String ext, String saveFileName, Long fileSize) {
+        this.orgFileName = orgFileName;
+        this.ext = ext;
+        this.saveFileName = saveFileName;
+        this.fileSize = fileSize;
+    }
+
+    public void addNotice(Notice notice) {
+        this.notice = notice;
+    }
 }

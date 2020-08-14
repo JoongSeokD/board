@@ -34,24 +34,24 @@ public class AttacheFileService {
 
         for (MultipartFile multipartFile : file) {
             if (!multipartFile.isEmpty()){
-                AttacheFile attacheFile = getAttacheFile(multipartFile);
+                AttacheFile attacheFile = newAttacheFile(multipartFile);
                 attacheFiles.add(attacheFile);
-                makeFile(multipartFile, attacheFile.getSaveFileName());
+                makeFile(multipartFile, attacheFile.getSaveFileName(), attacheFile.getPath());
             }
         }
         notice.addFiles(attacheFiles);
     }
 
-    private AttacheFile getAttacheFile(MultipartFile multipartFile) {
+    private AttacheFile newAttacheFile(MultipartFile multipartFile) {
         String orgFileName = multipartFile.getOriginalFilename();
         String ext = StringUtils.getFilenameExtension(orgFileName);
         String saveFileName = UUID.randomUUID().toString();
         Long fileSize = multipartFile.getSize();
 
-        return new AttacheFile(orgFileName, ext, saveFileName, fileSize);
+        return new AttacheFile(orgFileName, ext, saveFileName, getPath(), fileSize);
     }
 
-    private void makeFile(MultipartFile multipartFile, String saveFileName) {
+    private String getPath() {
         LocalDateTime now = LocalDateTime.now();
 
         String basePath = appProperties.getPath();
@@ -60,17 +60,24 @@ public class AttacheFileService {
         String day = String.valueOf(now.getDayOfMonth());
 
         Path path = Paths.get(basePath, year, month, day);
-        File file = new File(path.toString());
+        return path.toString();
+    }
 
-        if (!file.exists()){
-            file.mkdirs();
-        }
-        file = new File(file ,   "/" +  saveFileName);
-
+    private void makeFile(MultipartFile multipartFile, String saveFileName, String path) {
+        File file = getFileForPath(saveFileName, path);
         try {
             multipartFile.transferTo(file);
         } catch (IOException e) {
             log.error("게시글 첨부파일 추가 중 에러 : {}", e.getMessage());
         }
     }
+
+    private File getFileForPath(String saveFileName, String path) {
+        File file = new File(path);
+        if (!file.exists()){
+            file.mkdirs();
+        }
+        return new File(file ,   "/" + saveFileName);
+    }
+
 }

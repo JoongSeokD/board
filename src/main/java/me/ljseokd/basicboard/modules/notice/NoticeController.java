@@ -2,10 +2,12 @@ package me.ljseokd.basicboard.modules.notice;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.net.HttpHeaders;
 import lombok.RequiredArgsConstructor;
 import me.ljseokd.basicboard.modules.account.Account;
 import me.ljseokd.basicboard.modules.account.CurrentAccount;
 import me.ljseokd.basicboard.modules.file.AttacheFile;
+import me.ljseokd.basicboard.modules.file.AttacheFileRepository;
 import me.ljseokd.basicboard.modules.file.AttacheFileService;
 import me.ljseokd.basicboard.modules.notice.form.NoticeForm;
 import me.ljseokd.basicboard.modules.notice.form.TagForm;
@@ -14,20 +16,25 @@ import me.ljseokd.basicboard.modules.reply.ReplyService;
 import me.ljseokd.basicboard.modules.reply.dto.ReplyDto;
 import me.ljseokd.basicboard.modules.reply.form.ReplyForm;
 import me.ljseokd.basicboard.modules.tag.TagService;
+import org.apache.tika.Tika;
 import org.modelmapper.ModelMapper;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
@@ -43,8 +50,7 @@ public class NoticeController {
     private final ReplyRepository replyRepository;
     private final ObjectMapper objectMapper;
     private final AttacheFileService attacheFileService;
-
-
+    private final AttacheFileRepository attacheFileRepository;
 
     @GetMapping("/new")
     public String createNoticeForm(Model model){
@@ -77,8 +83,7 @@ public class NoticeController {
                              @PathVariable Long noticeId,
                              Model model){
 
-        Notice notice = noticeRepository.findAccountFetchById(noticeId)
-                .orElseThrow(() -> new IllegalArgumentException(String.valueOf(noticeId)));;
+        Notice notice = noticeService.viewCountIncrease(noticeId);
 
         model.addAttribute("isOwner", notice.getAccount().isOwner(account));
         model.addAttribute(notice);
@@ -117,11 +122,33 @@ public class NoticeController {
     @PostMapping("/{noticeId}/delete")
     public String noticeDelete(@PathVariable Long noticeId,
                                RedirectAttributes attributes){
-        Notice notice = findById(noticeId);
-        noticeRepository.delete(notice);
+        String title = noticeService.delete(noticeId);
         attributes.addFlashAttribute("message",
-                notice.getTitle() + " 게시글이 삭제 되었습니다.");
+                title + " 게시글이 삭제 되었습니다.");
         return "redirect:/notice/list";
+    }
+
+    @GetMapping("/{fileId}")
+    public ResponseEntity attacheFileDownLoad(@PathVariable Long fileId)
+            throws IOException {
+        AttacheFile attacheFile = attacheFileRepository.findById(fileId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 번호에 파일 데이터를 찾을 수 없습니다." + fileId));
+        String path = attacheFile.getPath();
+        String saveFileName = attacheFile.getSaveFileName();
+
+        File file = new File(path + "/" + saveFileName);
+        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+
+        Tika tika = new Tika();
+        String mimeType = tika.detect(file);
+        MediaType mediaType = MediaType.parseMediaType(mimeType);
+
+        String fileName = attacheFile.getOrgFileName();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"))
+                .contentType(mediaType)
+                .contentLength(file.length())
+                .body(resource);
     }
 
     @GetMapping("/list")

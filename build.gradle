@@ -39,13 +39,17 @@ dependencies {
     compile group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity5', version: '3.0.4.RELEASE'
     // modelmapper
     compile group: 'org.modelmapper', name: 'modelmapper', version: '2.3.8'
+    // 파일 다운로드 mime타입 추출 라이브러리
+    compile group: 'org.apache.tika', name: 'tika-core', version: '1.24.1'
     //querydsl 추가
     implementation 'com.querydsl:querydsl-jpa'
+
 
     // 테스트 컨테이너
     testCompile group: 'org.testcontainers', name: 'junit-jupiter', version: '1.14.3'
     // postgresql 테스트 컨테이너
     testCompile group: 'org.testcontainers', name: 'postgresql', version: '1.14.3'
+
 
 
 

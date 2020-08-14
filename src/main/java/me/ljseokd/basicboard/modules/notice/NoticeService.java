@@ -58,5 +58,10 @@ public class NoticeService {
         return notice.getTitle();
     }
 
-
+    public Notice viewCountIncrease(Long noticeId) {
+        Notice notice = noticeRepository.findNoticeView(noticeId)
+                .orElseThrow(() -> new IllegalArgumentException(String.valueOf(noticeId)));;
+        notice.countIncrease();
+        return notice;
+    }
 }

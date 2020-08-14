@@ -31,6 +31,8 @@ public class Notice extends DateTimeBaseEntity {
     @Lob
     private String contents;
 
+    private long count;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "account_id")
     private Account account;
@@ -73,4 +75,6 @@ public class Notice extends DateTimeBaseEntity {
         fileList = attacheFiles;
         fileList.forEach(attacheFile -> attacheFile.addNotice(this));
     }
+
+    public void countIncrease() {count++;}
 }

@@ -13,4 +13,10 @@ public interface NoticeRepository extends JpaRepository<Notice, Long>, NoticeRep
 
     @Query("select n from Notice n join fetch n.replyList where n.id = ?1")
     Optional<Notice> findByIdFetchReply(Long noticeId);
+
+    @Query("select n from Notice n left join fetch n.fileList left join fetch n.account where n.id = ?1")
+    Optional<Notice> findNoticeView(Long noticeId);
+
+    @Query("select n from Notice n left join fetch n.replyList left join fetch n.fileList where n.id = ?1")
+    Optional<Notice> findByIdFetchFileAndReply(Long noticeId);
 }

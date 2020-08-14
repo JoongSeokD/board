@@ -6,9 +6,9 @@ import com.google.common.net.HttpHeaders;
 import lombok.RequiredArgsConstructor;
 import me.ljseokd.basicboard.modules.account.Account;
 import me.ljseokd.basicboard.modules.account.CurrentAccount;
-import me.ljseokd.basicboard.modules.file.AttacheFile;
 import me.ljseokd.basicboard.modules.file.AttacheFileRepository;
 import me.ljseokd.basicboard.modules.file.AttacheFileService;
+import me.ljseokd.basicboard.modules.file.dto.AttacheFileDto;
 import me.ljseokd.basicboard.modules.notice.form.NoticeForm;
 import me.ljseokd.basicboard.modules.notice.form.TagForm;
 import me.ljseokd.basicboard.modules.reply.ReplyRepository;
@@ -16,11 +16,8 @@ import me.ljseokd.basicboard.modules.reply.ReplyService;
 import me.ljseokd.basicboard.modules.reply.dto.ReplyDto;
 import me.ljseokd.basicboard.modules.reply.form.ReplyForm;
 import me.ljseokd.basicboard.modules.tag.TagService;
-import org.apache.tika.Tika;
 import org.modelmapper.ModelMapper;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,11 +27,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.List;
+
+import static com.google.common.net.HttpHeaders.*;
+import static java.net.URLEncoder.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -131,24 +129,14 @@ public class NoticeController {
     @GetMapping("/{fileId}")
     public ResponseEntity attacheFileDownLoad(@PathVariable Long fileId)
             throws IOException {
-        AttacheFile attacheFile = attacheFileRepository.findById(fileId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 번호에 파일 데이터를 찾을 수 없습니다." + fileId));
-        String path = attacheFile.getPath();
-        String saveFileName = attacheFile.getSaveFileName();
 
-        File file = new File(path + "/" + saveFileName);
-        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+        AttacheFileDto fileDto = attacheFileService.getResourceFile(fileId);
 
-        Tika tika = new Tika();
-        String mimeType = tika.detect(file);
-        MediaType mediaType = MediaType.parseMediaType(mimeType);
-
-        String fileName = attacheFile.getOrgFileName();
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"))
-                .contentType(mediaType)
-                .contentLength(file.length())
-                .body(resource);
+                .header(CONTENT_DISPOSITION, "attachment;filename=" + encode(fileDto.getFileName(), "UTF-8"))
+                .contentType(fileDto.getMediaType())
+                .contentLength(fileDto.getFile().length())
+                .body(fileDto.getResource());
     }
 
     @GetMapping("/list")

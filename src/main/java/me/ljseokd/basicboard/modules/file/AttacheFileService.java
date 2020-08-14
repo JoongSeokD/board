@@ -3,14 +3,19 @@ package me.ljseokd.basicboard.modules.file;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.ljseokd.basicboard.infra.config.AppProperties;
+import me.ljseokd.basicboard.modules.file.dto.AttacheFileDto;
 import me.ljseokd.basicboard.modules.notice.Notice;
 import me.ljseokd.basicboard.modules.notice.NoticeRepository;
+import org.apache.tika.Tika;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,6 +32,7 @@ public class AttacheFileService {
 
     private final AppProperties appProperties;
     private final NoticeRepository noticeRepository;
+    private final AttacheFileRepository attacheFileRepository;
 
     public void addAttacheFile(Long createdId, MultipartFile[] file) {
         Notice notice = noticeRepository.findById(createdId).get();
@@ -80,4 +86,24 @@ public class AttacheFileService {
         return new File(file ,   "/" + saveFileName);
     }
 
+    public AttacheFileDto getResourceFile(Long fileId) throws IOException {
+        AttacheFile attacheFile = attacheFileRepository.findById(fileId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 번호에 파일 데이터를 찾을 수 없습니다." + fileId));
+
+        File file = new File(attacheFile.getPath() + "/" + attacheFile.getSaveFileName());
+
+        return new AttacheFileDto(
+                file,
+                new InputStreamResource(new FileInputStream(file)),
+                getMediaType(file),
+                attacheFile.getOrgFileName()
+        );
+    }
+
+    private MediaType getMediaType(File file) throws IOException {
+        Tika tika = new Tika();
+        String mimeType = tika.detect(file);
+        MediaType mediaType = MediaType.parseMediaType(mimeType);
+        return mediaType;
+    }
 }

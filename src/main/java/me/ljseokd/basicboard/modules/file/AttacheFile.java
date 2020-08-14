@@ -19,16 +19,18 @@ public class AttacheFile {
     private String orgFileName;
     private String ext;
     private String saveFileName;
+    private String path;
     private Long fileSize;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "notice_id")
     private Notice notice;
 
-    public AttacheFile(String orgFileName, String ext, String saveFileName, Long fileSize) {
+    public AttacheFile(String orgFileName, String ext, String saveFileName, String path,Long fileSize) {
         this.orgFileName = orgFileName;
         this.ext = ext;
         this.saveFileName = saveFileName;
+        this.path = path;
         this.fileSize = fileSize;
     }
 

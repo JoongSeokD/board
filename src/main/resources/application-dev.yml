@@ -6,10 +6,11 @@ spring:
     url: jdbc:postgresql://localhost:5432/board
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
     properties:
       hibernate:
         format_sql: true
+        default_batch_fetch_size: 100
     open-in-view: false
   profiles:
     active: dev
@@ -20,6 +21,8 @@ logging.level:
     descriptor.sql: trace
   org.springframework:
     security: DEBUG
+
+
 
 app:
   path: "C:/board_atch"

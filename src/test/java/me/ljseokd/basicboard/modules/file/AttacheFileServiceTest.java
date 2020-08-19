@@ -1,5 +1,6 @@
 package me.ljseokd.basicboard.modules.file;
 
+import me.ljseokd.basicboard.infra.AbstractContainerBaseTest;
 import me.ljseokd.basicboard.infra.config.AppProperties;
 import me.ljseokd.basicboard.modules.account.Account;
 import me.ljseokd.basicboard.modules.account.AccountRepository;
@@ -19,11 +20,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @ActiveProfiles("dev")
-class AttacheFileServiceTest {
+class AttacheFileServiceTest extends AbstractContainerBaseTest {
 
     @Autowired AttacheFileService attacheFileService;
 
@@ -31,6 +32,7 @@ class AttacheFileServiceTest {
 
     @Autowired AccountRepository accountRepository;
     @Autowired AppProperties appProperties;
+
 
     @DisplayName("첨부파일 저장")
     @Test

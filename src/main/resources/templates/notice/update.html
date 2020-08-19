@@ -3,6 +3,8 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>글 수정</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
@@ -11,17 +13,36 @@
     <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-<form class="needs-validation col-sm-10" th:action="@{'/notice/' + ${noticeForm.id} + '/update'}" th:object="${noticeForm}" method="post">
-    <input type="text" name="title" th:field="*{title}" placeholder="제목을 입력하세요" required><br/>
 
+
+<ul id="beforeFileList" >
+    <div  th:each="file : ${fileList}">
+        <li th:text="${file.orgFileName}"></li>
+        <button type="button" th:data-idx="${file.id}" th:id="'file' + ${file.id}" class="removeBtn" >삭제</button>
+    </div>
+</ul>
+<form class="needs-validation col-sm-10" th:action="@{'/notice/' + ${noticeForm.id} + '/update'}"
+      enctype="multipart/form-data" th:object="${noticeForm}" method="post">
+    <input type="text" name="title" th:field="*{title}" placeholder="제목을 입력하세요" required><br/>
+    <div id="fileList">
+        <button type="button" id="addFileBtn" onclick="addFile($(this))">파일 추가</button>
+    </div>
     <textarea type="textarea" th:field="*{contents}" class="editor" required></textarea>
     <button type="submit">수정하기</button>
     <a th:href="@{'/notice/' + ${noticeForm.id} + '/view'}">돌아가기</a>
 </form>
 
 <script src="/node_modules/summernote/dist/summernote-bs4.js"></script>
-<script>
+<script type="application/javascript">
+    var csrfToken = $("meta[name='_csrf']").attr("content");
+    var csrfHeader = $("meta[name='_csrf_header']").attr("content");
     $(function (){
+        $(document).ajaxSend(function (e, xhr, options) {
+            xhr.setRequestHeader(csrfHeader, csrfToken);
+        });
+
+        $(".removeBtn").on("click", deleteBeforeFile);
+
         $(".editor").summernote({
             fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Nato Sans KR', 'Merriweather'],
             placeholder: '내용을 입력하세요',
@@ -29,6 +50,35 @@
             height:300
         });
     });
+    function addFile(e){
+        let fileCount = ($("#fileList").children().length / 2) + $("#beforeFileList").children().length;
+        if (fileCount > 5){
+            return;
+        }
+        e.after("<button type='button' onclick='removeFile($(this))'>삭제</button>");
+        e.after("<input type='file' name='file' >");
+
+    }
+    function removeFile(e){
+        e.prev().remove();
+        e.remove();
+    }
+    function deleteBeforeFile(){
+        let fileId = $(this).data("idx");
+        $.ajax({
+            autocomplete: {
+                enabled: true,
+                rightKey: true,
+            },
+            contentType: "application/json; charset=utf-8",
+            method: "POST",
+            url: "/attacheFile/" + fileId + "/remove"
+        }).done(function (data, status) {
+            $("#file" + fileId).parent().remove();
+        }).fail(function(xhr, status, errorThrown) {
+            console.log(status + " and status is " + errorThrown);
+        });
+    }
 
 </script>
 </body>

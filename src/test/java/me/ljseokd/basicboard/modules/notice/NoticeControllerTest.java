@@ -192,7 +192,7 @@ class NoticeControllerTest  extends AbstractContainerBaseTest {
         entityManager.flush();
         entityManager.clear();
         //when
-        mockMvc.perform(post("/notice/" + noticeId + "/update")
+        mockMvc.perform(multipart("/notice/" + noticeId + "/update")
                 .param("title","updateTitle")
                 .param("contents", "updateContents")
                 .with(csrf()))
@@ -223,7 +223,7 @@ class NoticeControllerTest  extends AbstractContainerBaseTest {
         noticeForm.setContents("contents");
         Long noticeId = noticeService.createNotice(account, noticeForm);
         //when
-        mockMvc.perform(post("/notice/" + noticeId + "/update")
+        mockMvc.perform(multipart("/notice/" + noticeId + "/update")
                 .param("title","updateTitleupdateTitleupdateTitleupdateTitleupdateTitleupdateTitleupdateTitleupdateTitleupdateTitleupdateTitleupdateTitleupdateTitleupdateTitleupdateTitleupdateTitleupdateTitleupdateTitleupdateTitleupdateTitleupdateTitleupdateTitleupdateTitleupdateTitleupdateTitleupdateTitleupdateTitle")
                 .param("contents", "updateContents")
                 .with(csrf()))

@@ -2,6 +2,7 @@ package me.ljseokd.basicboard.modules.notice;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import me.ljseokd.basicboard.modules.account.Account;
 import me.ljseokd.basicboard.modules.notice.dto.NoticeDto;
 import me.ljseokd.basicboard.modules.notice.dto.QNoticeDto;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import static me.ljseokd.basicboard.modules.account.QAccount.account;
 import static me.ljseokd.basicboard.modules.notice.QNotice.notice;
+import static me.ljseokd.basicboard.modules.notice.reply.QReply.reply;
 
 
 public class NoticeRepositoryImpl implements NoticeRepositoryCustom{
@@ -40,5 +42,17 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom{
         List<NoticeDto> noticeDtos = results.getResults();
         long total = results.getTotal();
         return new PageImpl<>(noticeDtos, pageable, total);
+    }
+
+    @Override
+    public List<Account> findAccountWithNotificationById(Long noticeId, Long writerId) {
+        List<Account> accounts = queryFactory
+                .select(account)
+                .distinct()
+                .from(notice, reply, account)
+                .join(reply.notice, notice)
+                .where(notice.id.eq(noticeId))
+                .fetch();
+        return accounts;
     }
 }

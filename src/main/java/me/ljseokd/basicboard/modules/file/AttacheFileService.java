@@ -106,4 +106,16 @@ public class AttacheFileService {
         MediaType mediaType = MediaType.parseMediaType(mimeType);
         return mediaType;
     }
+
+    public void removeFile(Long fileId) {
+        AttacheFile attacheFile = attacheFileRepository.findById(fileId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 첨부파일이 없습니다." + fileId));
+        attacheFileRepository.delete(attacheFile);
+        String path = attacheFile.getPath();
+        String saveFileName = attacheFile.getSaveFileName();
+        File removeFile = new File(path + "/" + saveFileName);
+        if (removeFile.exists()){
+            removeFile.delete();
+        }
+    }
 }

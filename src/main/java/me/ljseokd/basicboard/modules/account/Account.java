@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.ljseokd.basicboard.modules.account.form.ProfileForm;
 import me.ljseokd.basicboard.modules.notice.Notice;
+import me.ljseokd.basicboard.modules.notification.Notification;
 
 import javax.persistence.*;
 
@@ -32,6 +33,9 @@ public class Account {
     @OneToMany(mappedBy = "account")
     private List<Notice> notices = new ArrayList<>();
 
+    @OneToMany(mappedBy = "account")
+    private List<Notification> notificationList = new ArrayList<>();
+
     public Account(String nickname, String password) {
         this.nickname = nickname;
         this.password = password;
@@ -42,6 +46,10 @@ public class Account {
             return this.equals(account);
         }
         return false;
+    }
+
+    public void addNotification(Notification notification){
+        notificationList.add(notification);
     }
 
     public void changeProfile(ProfileForm profileForm) {

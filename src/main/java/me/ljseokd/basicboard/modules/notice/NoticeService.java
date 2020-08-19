@@ -34,11 +34,12 @@ public class NoticeService {
     }
 
 
-    public void update(Long noticeId, NoticeForm noticeForm) {
+    public Long update(Long noticeId, NoticeForm noticeForm) {
         Notice notice = noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new IllegalArgumentException(String.valueOf(noticeId)));
 
         notice.update(noticeForm);
+        return notice.getId();
     }
 
     public String delete(Long noticeId) {

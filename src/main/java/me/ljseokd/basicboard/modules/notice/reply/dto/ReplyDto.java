@@ -1,4 +1,4 @@
-package me.ljseokd.basicboard.modules.reply.dto;
+package me.ljseokd.basicboard.modules.notice.reply.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Data;

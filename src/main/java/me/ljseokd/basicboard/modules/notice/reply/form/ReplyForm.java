@@ -1,4 +1,4 @@
-package me.ljseokd.basicboard.modules.reply.form;
+package me.ljseokd.basicboard.modules.notice.reply.form;
 
 import lombok.Data;
 

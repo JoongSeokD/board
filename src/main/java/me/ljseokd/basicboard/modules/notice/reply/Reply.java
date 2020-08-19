@@ -1,4 +1,4 @@
-package me.ljseokd.basicboard.modules.reply;
+package me.ljseokd.basicboard.modules.notice.reply;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,8 +1,8 @@
-package me.ljseokd.basicboard.modules.reply;
+package me.ljseokd.basicboard.modules.notice.reply;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import me.ljseokd.basicboard.modules.reply.dto.QReplyDto;
-import me.ljseokd.basicboard.modules.reply.dto.ReplyDto;
+import me.ljseokd.basicboard.modules.notice.reply.dto.QReplyDto;
+import me.ljseokd.basicboard.modules.notice.reply.dto.ReplyDto;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -10,7 +10,7 @@ import java.util.List;
 
 import static me.ljseokd.basicboard.modules.account.QAccount.account;
 import static me.ljseokd.basicboard.modules.notice.QNotice.notice;
-import static me.ljseokd.basicboard.modules.reply.QReply.reply;
+import static me.ljseokd.basicboard.modules.notice.reply.QReply.reply;
 
 @Transactional(readOnly = true)
 public class ReplyRepositoryImpl implements ReplyRepositoryCustom{

@@ -5,7 +5,7 @@ import me.ljseokd.basicboard.modules.account.Account;
 import me.ljseokd.basicboard.modules.account.AccountRepository;
 import me.ljseokd.basicboard.modules.file.AttacheFileRepository;
 import me.ljseokd.basicboard.modules.notice.form.NoticeForm;
-import me.ljseokd.basicboard.modules.reply.ReplyRepository;
+import me.ljseokd.basicboard.modules.notice.reply.ReplyRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

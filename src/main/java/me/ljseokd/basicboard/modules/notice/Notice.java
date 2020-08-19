@@ -6,7 +6,7 @@ import me.ljseokd.basicboard.infra.auditing.DateTimeBaseEntity;
 import me.ljseokd.basicboard.modules.account.Account;
 import me.ljseokd.basicboard.modules.file.AttacheFile;
 import me.ljseokd.basicboard.modules.notice.form.NoticeForm;
-import me.ljseokd.basicboard.modules.reply.Reply;
+import me.ljseokd.basicboard.modules.notice.reply.Reply;
 
 import javax.persistence.*;
 import java.util.ArrayList;

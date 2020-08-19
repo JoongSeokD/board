@@ -1,6 +1,6 @@
-package me.ljseokd.basicboard.modules.reply;
+package me.ljseokd.basicboard.modules.notice.reply;
 
-import me.ljseokd.basicboard.modules.reply.dto.ReplyDto;
+import me.ljseokd.basicboard.modules.notice.reply.dto.ReplyDto;
 
 import java.util.List;
 

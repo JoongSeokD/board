@@ -11,6 +11,7 @@
 <a sec:authorize="isAnonymous()" href="/login">로그인</a>
 <a sec:authorize="isAnonymous()" href="/sign-up">회원 가입</a>
 <a th:href="@{/notice/list}">글 목록</a>
+<a th:href="@{/events}">행사</a>
 
 <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
     <button type="submit">로그아웃</button>

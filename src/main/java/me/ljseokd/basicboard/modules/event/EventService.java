@@ -12,7 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class EventService {
     private final EventRepository eventRepository;
 
-    public void newEvent(Account account, EventForm eventForm) {
-        eventRepository.save(new Event(account, eventForm));
+    public Long newEvent(Account account, EventForm eventForm) {
+        Event newEvent = eventRepository.save(new Event(account, eventForm));
+        return newEvent.getId();
     }
 }

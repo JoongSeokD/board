@@ -55,5 +55,57 @@ class EventControllerTest extends AbstractContainerBaseTest {
                 .andExpect(unauthenticated());
     }
 
+    @DisplayName("이벤트 등록 성공")
+    @Test
+    @WithAccount("ljseokd")
+    void create_new_event_success() throws Exception {
+        String.valueOf(LocalDateTime.now().plusDays(1));
+        mockMvc.perform(post("/events/new")
+                .param("title", "title")
+                .param("contents", "contents")
+                .param("limitOfEnrollments", "100")
+                .param("recruitmentStartDate", String.valueOf(LocalDateTime.now()))
+                .param("recruitmentEndDate", String.valueOf(LocalDateTime.now().plusDays(1)))
+                .param("eventsStartDate", String.valueOf(LocalDateTime.now().plusDays(2)))
+                .param("eventsEndDate", String.valueOf(LocalDateTime.now().plusDays(3)))
+                .param("eventType", "FCFS")
+                .with(csrf())
+        ).andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/events"));
+
+        assertEquals(1, eventRepository.findAll().size());
+    }
+    @WithAccount("ljseokd")
+    @DisplayName("이벤트 등록 실패 잘못된 날짜 입력")
+    @ParameterizedTest(name = "{0} {displayName}")
+    @CsvSource({
+            "'접수 마감일이 접수 시작일의 전','2020-08-22T09:30:21.568570300', '2020-08-21T09:30:21.568570300', '2020-08-21T09:30:21.568570300', '2020-08-21T09:30:21.568570300'",
+            "'행사 시작일이 접수 마감일의 전','2020-08-21T09:30:21.568570300', '2020-08-22T09:30:21.568570300', '2020-08-21T09:30:21.568570300', '2020-08-21T09:30:21.568570300'",
+            "'행사 마감일이 접수 마감일의 전','2020-08-20T09:30:21.568570300', '2020-08-22T09:30:21.568570300', '2020-08-23T09:30:21.568570300', '2020-08-21T09:30:21.568570300'",
+            "'행사 마감일이 행사 시작일의 전','2020-08-21T09:30:21.568570300', '2020-08-22T09:30:21.568570300', '2020-08-23T09:30:21.568570300', '2020-08-22T09:30:21.568570300'"
+    })
+    void create_new_event_is_not_recruitmentStartDate_valid(
+            String message,
+            String recruitmentStartDate,
+            String recruitmentEndDate,
+            String eventsStartDate,
+            String eventsEndDate
+    ) throws Exception {
+        mockMvc.perform(post("/events/new")
+                .param("title", "title")
+                .param("contents", "contents")
+                .param("limitOfEnrollments", "100")
+                .param("recruitmentStartDate", recruitmentStartDate)
+                .param("recruitmentEndDate", recruitmentEndDate)
+                .param("eventsStartDate", eventsStartDate)
+                .param("eventsEndDate", eventsEndDate)
+                .param("eventType", "FCFS")
+                .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(model().hasErrors())
+                .andExpect(view().name("event/new"));
+
+        assertEquals(0, eventRepository.findAll().size());
+    }
 
 }

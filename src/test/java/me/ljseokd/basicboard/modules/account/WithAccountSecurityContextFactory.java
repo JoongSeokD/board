@@ -1,7 +1,7 @@
 package me.ljseokd.basicboard.modules.account;
 
 import lombok.RequiredArgsConstructor;
-import me.ljseokd.basicboard.modules.main.form.SignUpForm;
+import me.ljseokd.basicboard.modules.account.form.SignUpForm;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;

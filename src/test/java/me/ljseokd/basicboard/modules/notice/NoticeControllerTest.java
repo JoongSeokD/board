@@ -8,7 +8,7 @@ import me.ljseokd.basicboard.modules.account.Account;
 import me.ljseokd.basicboard.modules.account.AccountRepository;
 import me.ljseokd.basicboard.modules.account.AccountService;
 import me.ljseokd.basicboard.modules.account.WithAccount;
-import me.ljseokd.basicboard.modules.main.form.SignUpForm;
+import me.ljseokd.basicboard.modules.account.form.SignUpForm;
 import me.ljseokd.basicboard.modules.notice.form.NoticeForm;
 import me.ljseokd.basicboard.modules.notice.form.TagForm;
 import me.ljseokd.basicboard.modules.notice.reply.Reply;

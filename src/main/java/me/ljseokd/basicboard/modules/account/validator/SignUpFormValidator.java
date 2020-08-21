@@ -1,8 +1,8 @@
-package me.ljseokd.basicboard.modules.main.validator;
+package me.ljseokd.basicboard.modules.account.validator;
 
 import lombok.RequiredArgsConstructor;
 import me.ljseokd.basicboard.modules.account.Account;
-import me.ljseokd.basicboard.modules.main.form.SignUpForm;
+import me.ljseokd.basicboard.modules.account.form.SignUpForm;
 import me.ljseokd.basicboard.modules.account.AccountRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

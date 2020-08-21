@@ -2,8 +2,8 @@ package me.ljseokd.basicboard.modules.account;
 
 import lombok.RequiredArgsConstructor;
 import me.ljseokd.basicboard.modules.account.dto.ProfileDto;
-import me.ljseokd.basicboard.modules.main.form.SignUpForm;
-import me.ljseokd.basicboard.modules.main.validator.SignUpFormValidator;
+import me.ljseokd.basicboard.modules.account.form.SignUpForm;
+import me.ljseokd.basicboard.modules.account.validator.SignUpFormValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

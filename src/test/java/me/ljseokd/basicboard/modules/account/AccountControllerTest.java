@@ -1,7 +1,7 @@
 package me.ljseokd.basicboard.modules.account;
 
 import me.ljseokd.basicboard.infra.MockMvcTest;
-import me.ljseokd.basicboard.modules.main.form.SignUpForm;
+import me.ljseokd.basicboard.modules.account.form.SignUpForm;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

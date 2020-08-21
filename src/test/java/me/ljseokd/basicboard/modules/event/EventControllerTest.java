@@ -2,7 +2,10 @@ package me.ljseokd.basicboard.modules.event;
 
 import me.ljseokd.basicboard.infra.AbstractContainerBaseTest;
 import me.ljseokd.basicboard.infra.MockMvcTest;
+import me.ljseokd.basicboard.modules.account.Account;
+import me.ljseokd.basicboard.modules.account.AccountRepository;
 import me.ljseokd.basicboard.modules.account.WithAccount;
+import me.ljseokd.basicboard.modules.event.form.EventForm;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
@@ -26,6 +30,24 @@ class EventControllerTest extends AbstractContainerBaseTest {
     @Autowired MockMvc mockMvc;
 
     @Autowired EventRepository eventRepository;
+    @Autowired EventService eventService;
+    @Autowired AccountRepository accountRepository;
+
+    private Long createEvent() {
+        Account ljseokd = accountRepository.findByNickname("ljseokd").get();
+        LocalDateTime now = LocalDateTime.now();
+
+        EventForm eventForm = new EventForm();
+        eventForm.setTitle("title");
+        eventForm.setContents("contents");
+        eventForm.setLimitOfEnrollments(2);
+        eventForm.setRecruitmentStartDate(now);
+        eventForm.setRecruitmentEndDate(now.plusDays(1));
+        eventForm.setEventsStartDate(now.plusDays(2));
+        eventForm.setEventsEndDate(now.plusDays(3));
+        Long newEventId = eventService.newEvent(ljseokd, eventForm);
+        return newEventId;
+    }
 
     @DisplayName("이벤트 목록")
     @Test
@@ -107,5 +129,27 @@ class EventControllerTest extends AbstractContainerBaseTest {
 
         assertEquals(0, eventRepository.findAll().size());
     }
+
+    @DisplayName("행사 상세 화면")
+    @Test
+    @WithAccount("ljseokd")
+    void view_event() throws Exception {
+        //given
+        Long newEventId = createEvent();
+
+        //when
+        mockMvc.perform(get("/events/" + newEventId +"/view"))
+                .andExpect(model().attributeExists("eventViewDto"))
+                .andExpect(view().name("event/view"))
+                .andExpect(status().isOk());
+    }
+
+    @DisplayName("행사 상세 화면 실패 (없는 번호)")
+    @Test
+    void view_event_fail() throws Exception {
+        assertThrows(IllegalArgumentException.class,
+                ()-> mockMvc.perform(get("/events/1/view")));
+    }
+
 
 }

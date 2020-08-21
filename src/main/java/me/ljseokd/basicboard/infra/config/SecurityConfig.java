@@ -24,7 +24,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .mvcMatchers("/", "/login", "/sign-up",
                         "/notice/*/view", "/notice/list", "/profile/*",
-                        "notice/*/reply"
+                        "notice/*/reply",
+                        "/events"
                         ).permitAll()
                 .anyRequest().authenticated();
 

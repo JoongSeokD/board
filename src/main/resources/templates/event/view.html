@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>행사 상세</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/node_modules/jdenticon/dist/jdenticon.min.js"></script>
+</head>
+<body>
+<svg th:if="${#strings.isEmpty(eventViewDto.thumbnail)}" class="rounded"
+     th:data-jdenticon-value="${eventViewDto.title}" width="125" height="125"></svg>
+<img th:if="${!#strings.isEmpty(eventViewDto.thumbnail)}" class="rounded"
+     th:src="${eventViewDto.thumbnail}"
+     width="125" height="125" alt="name" th:alt="대표 이미지"/>
+<span th:text="${eventViewDto.title}"></span><br/>
+내용 : <span th:utext="${eventViewDto.contents}"></span><br/>
+작성자 : <a th:href="@{'/profile/' + ${eventViewDto.createdBy.nickname}}"><span th:text="${eventViewDto.createdBy.nickname}"></span></a><br/>
+접수 시작 시간 : <span th:text="${#temporals.format(eventViewDto.recruitmentStartDate, 'yyyy-MM-dd')}"></span><br/>
+접수 마감 시간 : <span th:text="${#temporals.format(eventViewDto.recruitmentEndDate, 'yyyy-MM-dd')}"></span><br/>
+행사 시작 시간 : <span th:text="${#temporals.format(eventViewDto.eventsStartDate, 'yyyy-MM-dd')}"></span><br/>
+행사 마감 시간 : <span th:text="${#temporals.format(eventViewDto.eventsEndDate, 'yyyy-MM-dd')}"></span><br/>
+모집 방법 : <span th:text="${eventViewDto.eventType.toString() == 'FCFS' ? '선착순' : '관리자 확인'}"></span><br/>
+가격 여부 : <span th:if="${!eventViewDto.free}" th:text="${eventViewDto.price}"></span>
+<span th:if="${eventViewDto.free}" th:text="무료"></span><br/>
+모집 인원 : <span th:text="${eventViewDto.limitOfEnrollments + '명'}"></span><br/>
+
+<div th:if="${isOwner}">
+    <a th:href="@{'/events/' + ${eventId} + '/update'}" th:text="수정"></a>
+    <a th:href="@{/}" th:text="삭제"></a>
+</div>
+<!-- TODO 이미 신청한 사람, 접수 마감시간이 지난시점은 보이지 않아야함, 모집 인원을 초과하지 않아야함 -->
+<div th:if="${isEnrollmentValidate}">
+    <a th:href="@{'/events/' + ${eventId} + '/enrollment'}" th:text="'참가 신청'"></a>
+</div>
+<a th:href="@{/events}" th:text="목록"></a>
+</body>
+</html>

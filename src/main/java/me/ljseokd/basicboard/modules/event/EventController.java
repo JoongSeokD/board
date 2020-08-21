@@ -38,4 +38,23 @@ public class EventController {
         return "event/list";
     }
 
+    @GetMapping("/events/new")
+    public String newEventsForm(@CurrentAccount Account account,
+                                Model model){
+        model.addAttribute(new EventForm());
+        return "event/new";
+    }
+
+    @PostMapping("/events/new")
+    public String newEventsSubmit(@CurrentAccount Account account,
+                                  @Valid @ModelAttribute EventForm eventForm,
+                                  Errors errors,Model model){
+
+        if (errors.hasErrors()){
+            model.addAttribute(eventForm);
+            return "event/new";
+        }
+        eventService.newEvent(account, eventForm);
+        return "redirect:/events";
+    }
 }

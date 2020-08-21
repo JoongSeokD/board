@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>행사 목록</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/node_modules/summernote/dist/summernote-bs4.min.css">
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/node_modules/jdenticon/dist/jdenticon.min.js"></script>
+</head>
+<body>
+
+<div class="row">
+    <ul th:each="event : ${eventPage}">
+        <a th:href="@{'/profile/' + ${event.createdBy}}"><li th:text="${event.createdBy}"></li></a>
+        <li>
+            <a th:href="@{'/notice/' + ${event.id} + '/view'}" th:text="${event.title}"></a>
+        </li>
+        <li>
+            <svg th:if="${#strings.isEmpty(event.thumbnail)}" svg class="img-fluid float-left rounded img-thumbnail"
+             th:data-jdenticon-value="${event.title}" width="125" height="125"></svg>
+            <img th:if="${!#strings.isEmpty(event.thumbnail)}" svg class="img-fluid float-left rounded img-thumbnail"
+                 th:src="${event.thumbnail}" width="125" height="125"/>
+        </li>
+        <li th:text="'접수 시작일 : ' + ${#temporals.format(event.recruitmentStartDate, 'yyyy-MM-dd')}"></li>
+        <li th:text="'접수 마감일 : ' + ${#temporals.format(event.recruitmentEndDate, 'yyyy-MM-dd')}"></li>
+        <li th:text="'행사 시작일 : ' + ${#temporals.format(event.eventsStartDate, 'yyyy-MM-dd')}"></li>
+        <li th:text="'행사 마감일 : ' + ${#temporals.format(event.eventsEndDate, 'yyyy-MM-dd')}"></li>
+    </ul>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-sm-10">
+        <nav>
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${!eventPage.hasPrevious()}? disabled">
+                    <a th:href="@{'/events?page=' + ${eventPage.getNumber() - 1}}"
+                       class="page-link" tabindex="-1" aria-disabled="true">
+                        Previous
+                    </a>
+                </li>
+                <li class="page-item" th:classappend="${i == eventPage.getNumber()}? active"
+                    th:each="i: ${#numbers.sequence(0, eventPage.getTotalPages() - 1)}">
+                    <a th:href="@{'/events?page=' + ${i}}"
+                       class="page-link" href="#" th:text="${i + 1}">1</a>
+                </li>
+                <li class="page-item" th:classappend="${!eventPage.hasNext()}? disabled">
+                    <a th:href="@{'/events?page=' + ${eventPage.getNumber() + 1}}"
+                       class="page-link">
+                        Next
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+<a sec:authorize="isAuthenticated()" href="/events/new">행사 등록</a>
+<a sec:authorize="isAnonymous()" href="/login">로그인</a>
+<a sec:authorize="isAnonymous()" href="/sign-up">회원 가입</a>
+</body>
+</html>

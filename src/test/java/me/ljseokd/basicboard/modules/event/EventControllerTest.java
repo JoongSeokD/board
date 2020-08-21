@@ -35,6 +35,25 @@ class EventControllerTest extends AbstractContainerBaseTest {
                 .andExpect(model().attributeExists("eventPage"))
                 .andExpect(view().name("event/list"));
     }
+    @DisplayName("이벤트 등록 폼 성공")
+    @Test
+    @WithAccount("ljseokd")
+    void new_event_success() throws Exception {
+        mockMvc.perform(get("/events/new"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("eventForm"))
+                .andExpect(view().name("event/new"))
+                .andExpect(authenticated());
+    }
+
+    @DisplayName("이벤트 등록 폼 실패 (로그인 X)")
+    @Test
+    void new_event_fail() throws Exception {
+        mockMvc.perform(get("/events/new"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("http://localhost/login"))
+                .andExpect(unauthenticated());
+    }
 
 
 }

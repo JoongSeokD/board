@@ -18,7 +18,7 @@
     <ul th:each="event : ${eventPage}">
         <a th:href="@{'/profile/' + ${event.createdBy}}"><li th:text="${event.createdBy}"></li></a>
         <li>
-            <a th:href="@{'/notice/' + ${event.id} + '/view'}" th:text="${event.title}"></a>
+            <a th:href="@{'/events/' + ${event.id} + '/view'}" th:text="${event.title}"></a>
         </li>
         <li>
             <svg th:if="${#strings.isEmpty(event.thumbnail)}" svg class="img-fluid float-left rounded img-thumbnail"
@@ -61,5 +61,6 @@
 <a sec:authorize="isAuthenticated()" href="/events/new">행사 등록</a>
 <a sec:authorize="isAnonymous()" href="/login">로그인</a>
 <a sec:authorize="isAnonymous()" href="/sign-up">회원 가입</a>
+<a href="/">목록</a>
 </body>
 </html>

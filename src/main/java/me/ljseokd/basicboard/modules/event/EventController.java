@@ -15,6 +15,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 
@@ -72,9 +73,34 @@ public class EventController {
         return "event/view";
     }
 
-    // 행사 작성자가 아니고, 접수 마감 전인지 검증
+    @GetMapping("/events/{eventId}/update")
+    public String eventUpdateForm(@PathVariable Long eventId, Model model,
+                                  @CurrentAccount Account account,
+                                  HttpServletRequest request){
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 접근 입니다." + eventId));
+        EventForm eventForm = modelMapper.map(event, EventForm.class);
+        model.addAttribute(eventForm);
+        return "event/update";
+    }
+    @PostMapping("/events/{eventId}/update")
+    public String eventUpdateSubmit(@Valid @ModelAttribute EventForm eventForm,
+                                    Errors errors, Model model,
+                                    @PathVariable Long eventId){
+        if (errors.hasErrors()){
+            return "event/update";
+        }
+
+        eventService.updateEvent(eventId, eventForm);
+
+        return "redirect:/events/" + eventId + "/view";
+    }
+
+    // TODO 행사 작성자가 아니고, 접수 시작 시간 후인지,  접수 마감 전인지 검증
     private boolean isEnrollmentValidate(Account account, Event event) {
-        return !isOwner(account, event) && !LocalDateTime.now().isBefore(event.getRecruitmentEndDate());
+        return !isOwner(account, event)
+                && LocalDateTime.now().isBefore(event.getRecruitmentEndDate())
+                && event.getRecruitmentStartDate().isBefore(LocalDateTime.now());
     }
 
     private boolean isOwner(Account account, Event event) {

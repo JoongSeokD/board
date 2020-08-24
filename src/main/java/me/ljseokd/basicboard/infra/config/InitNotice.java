@@ -42,7 +42,7 @@ public class InitNotice {
                 eventForm.setTitle("title" + i);
                 eventForm.setContents("contents" + i);
                 eventForm.setFree(true);
-                eventForm.setRecruitmentStartDate(LocalDateTime.now().plusDays(1));
+                eventForm.setRecruitmentStartDate(LocalDateTime.now());
                 eventForm.setRecruitmentEndDate(LocalDateTime.now().plusDays(2));
                 eventForm.setEventsStartDate(LocalDateTime.now().plusDays(3));
                 eventForm.setEventsEndDate(LocalDateTime.now().plusDays(4));

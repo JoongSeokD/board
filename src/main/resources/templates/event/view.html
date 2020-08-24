@@ -16,7 +16,7 @@
      th:data-jdenticon-value="${eventViewDto.title}" width="125" height="125"></svg>
 <img th:if="${!#strings.isEmpty(eventViewDto.thumbnail)}" class="rounded"
      th:src="${eventViewDto.thumbnail}"
-     width="125" height="125" alt="name" th:alt="대표 이미지"/>
+     width="125" height="125" alt="name" th:alt="'대표 이미지'"/>
 <span th:text="${eventViewDto.title}"></span><br/>
 내용 : <span th:utext="${eventViewDto.contents}"></span><br/>
 작성자 : <a th:href="@{'/profile/' + ${eventViewDto.createdBy.nickname}}"><span th:text="${eventViewDto.createdBy.nickname}"></span></a><br/>

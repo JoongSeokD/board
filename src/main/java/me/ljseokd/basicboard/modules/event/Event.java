@@ -62,4 +62,18 @@ public class Event {
         this.eventsStartDate = eventForm.getEventsStartDate();
         this.eventsEndDate = eventForm.getEventsEndDate();
     }
+
+    public void update(EventForm eventForm) {
+        title = eventForm.getTitle();
+        contents = eventForm.getContents();
+        limitOfEnrollments = eventForm.getLimitOfEnrollments();
+        thumbnail = eventForm.getThumbnail();
+        recruitmentStartDate = eventForm.getRecruitmentStartDate();
+        recruitmentEndDate = eventForm.getRecruitmentEndDate();
+        eventsStartDate = eventForm.getEventsStartDate();
+        eventsEndDate = eventForm.getEventsEndDate();
+        free = eventForm.isFree();
+        price = eventForm.getPrice();
+        eventType = eventForm.getEventType();
+    }
 }

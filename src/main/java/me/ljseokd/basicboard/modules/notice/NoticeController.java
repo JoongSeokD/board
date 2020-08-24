@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -92,6 +93,7 @@ public class NoticeController {
     @GetMapping("/{noticeId}/update")
     public String noticeUpdateForm(@CurrentAccount Account account,
                                    @PathVariable Long noticeId,
+                                   HttpServletRequest request,
                                    Model model){
 
         Notice notice = noticeRepository.findNoticeView(noticeId)
@@ -121,7 +123,9 @@ public class NoticeController {
 
 
     @PostMapping("/{noticeId}/delete")
-    public String noticeDelete(@PathVariable Long noticeId,
+    public String noticeDelete(@CurrentAccount Account account,
+                               @PathVariable Long noticeId,
+                               HttpServletRequest request,
                                RedirectAttributes attributes){
         String title = noticeService.delete(noticeId);
         attributes.addFlashAttribute("message",

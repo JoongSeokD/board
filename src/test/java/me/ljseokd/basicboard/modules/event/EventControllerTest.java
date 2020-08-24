@@ -92,9 +92,7 @@ class EventControllerTest extends AbstractContainerBaseTest {
                 .param("eventsEndDate", String.valueOf(LocalDateTime.now().plusDays(3)))
                 .param("eventType", "FCFS")
                 .with(csrf())
-        ).andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/events"));
-
+        ).andExpect(status().is3xxRedirection());
         assertEquals(1, eventRepository.findAll().size());
     }
     @WithAccount("ljseokd")
@@ -147,9 +145,77 @@ class EventControllerTest extends AbstractContainerBaseTest {
     @DisplayName("행사 상세 화면 실패 (없는 번호)")
     @Test
     void view_event_fail() throws Exception {
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(Exception.class,
                 ()-> mockMvc.perform(get("/events/1/view")));
     }
 
+    @DisplayName("행사 수정 화면")
+    @Test
+    @WithAccount("ljseokd")
+    void update_event_form() throws Exception {
+        //given
+        Long newEventId = createEvent();
+        //when
+        mockMvc.perform(get("/events/" + newEventId + "/update"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("eventForm"))
+                .andExpect(view().name("event/update"))
+                .andExpect(authenticated())
+        ;
+    }
+
+    @DisplayName("행사 수정 화면 실패 (없는 eventID)")
+    @Test
+    @WithAccount("ljseokd")
+    void update_event_form_fail() throws Exception {
+        assertThrows(Exception.class,
+                () -> mockMvc.perform(get("/events/1/update")));
+    }
+
+    @DisplayName("행사 수정 성공")
+    @Test
+    @WithAccount("ljseokd")
+    void update_event() throws Exception {
+        //given
+        Long newEventId = createEvent();
+        LocalDateTime now = LocalDateTime.now();
+        //when
+        mockMvc.perform(post("/events/" + newEventId + "/update")
+                .param("title", "title")
+                .param("contents", "contents")
+                .param("limitOfEnrollments", "3")
+                .param("recruitmentStartDate", String.valueOf(now))
+                .param("recruitmentEndDate", String.valueOf(now.plusDays(2)))
+                .param("eventsStartDate", String.valueOf(now.plusDays(3)))
+                .param("eventsEndDate", String.valueOf(now.plusDays(4)))
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(model().hasNoErrors())
+                .andExpect(redirectedUrl("/events/" + newEventId + "/view"))
+                .andExpect(authenticated());
+    }
+
+    @DisplayName("행사 수정 성공 실패 (잘못된 값)")
+    @Test
+    @WithAccount("ljseokd")
+    void update_event_fail() throws Exception {
+        //given
+        Long newEventId = createEvent();
+        LocalDateTime now = LocalDateTime.now();
+        //when
+        mockMvc.perform(post("/events/" + newEventId + "/update")
+                .param("title", "title")
+                .param("contents", "contents")
+                .param("limitOfEnrollments", "1")
+                .param("recruitmentStartDate", String.valueOf(now))
+                .param("recruitmentEndDate", String.valueOf(now.plusDays(2)))
+                .param("eventsStartDate", String.valueOf(now.plusDays(3)))
+                .param("eventsEndDate", String.valueOf(now.plusDays(4)))
+                .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(model().hasErrors())
+                .andExpect(view().name("event/update"))
+                .andExpect(authenticated());
+    }
 
 }

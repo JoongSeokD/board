@@ -11,9 +11,14 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class EventService {
     private final EventRepository eventRepository;
-
     public Long newEvent(Account account, EventForm eventForm) {
         Event newEvent = eventRepository.save(new Event(account, eventForm));
         return newEvent.getId();
+    }
+
+    public void updateEvent(Long eventId, EventForm eventForm) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new IllegalArgumentException(String.valueOf(eventId)));
+        event.update(eventForm);
     }
 }
